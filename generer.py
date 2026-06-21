@@ -349,7 +349,9 @@ def update_index(title, slug, category, date_fr, hero_url, excerpt):
     p = BASE_DIR / "index.html"
     c = p.read_text(encoding="utf-8")
     thumb = hero_url.replace("w=1400", "w=800")
-    card = f"""    <!-- {html.escape(title)} -->
+
+    # Nouvel article — toujours en 1ère position (gauche), sans delay
+    new_card = f"""    <!-- {html.escape(title)} -->
     <article class="blog-card rv" onclick="window.location='{slug}.html'" style="cursor:pointer">
       <div class="blog-img">
         <img src="{thumb}" alt="{html.escape(title)}" loading="lazy">
@@ -364,9 +366,35 @@ def update_index(title, slug, category, date_fr, hero_url, excerpt):
         </div>
       </div>
     </article>"""
-    marker = '<div class="blog-grid">'
-    if marker in c:
-        c = c.replace(marker, marker + "\n\n" + card + "\n")
+
+    # Extraire les articles existants dans la grid
+    grid_m = re.search(r'(<div class="blog-grid">)(.*?)(</div>\s*</section>)', c, re.DOTALL)
+    if not grid_m:
+        # Fallback simple si structure non trouvée
+        marker = '<div class="blog-grid">'
+        c = c.replace(marker, marker + "\n\n" + new_card + "\n")
+        p.write_text(c, encoding="utf-8")
+        return
+
+    grid_content = grid_m.group(2)
+    # Récupérer les articles existants (en ordre d'apparition)
+    existing = re.findall(r'(<article class="blog-card[^"]*".*?</article>)', grid_content, re.DOTALL)
+
+    # Garder seulement les 2 premiers (ils passent en positions 2 et 3)
+    kept = existing[:2]
+
+    # Appliquer les transition-delays : pos 1=rien, pos 2=.1s, pos 3=.2s
+    delays = ['', 'transition-delay:.1s;', 'transition-delay:.2s;']
+    ordered_cards = [new_card]
+    for i, art in enumerate(kept):
+        # Supprimer tout transition-delay existant dans le style
+        art = re.sub(r'transition-delay:[^;]+;', '', art)
+        # Injecter le bon delay
+        art = re.sub(r'style="(cursor:pointer)"', f'style="{delays[i+1]}\\1"', art)
+        ordered_cards.append(art)
+
+    new_grid_content = '\n\n'.join(ordered_cards) + '\n\n  '
+    c = c[:grid_m.start(2)] + '\n\n' + new_grid_content + c[grid_m.end(2):]
     p.write_text(c, encoding="utf-8")
 
 # ── MAIN ──────────────────────────────────────────────────────────────────────
