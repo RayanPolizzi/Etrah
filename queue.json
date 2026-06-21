@@ -1,85 +1,642 @@
 [
-  {"title": "Pourquoi créer un site de mariage change tout à votre organisation", "date": "2026-07-01", "status": "pending"},
-  {"title": "Les 5 erreurs à éviter absolument sur un site de mariage", "date": "2026-07-06", "status": "pending"},
-  {"title": "Site de mariage : combien de temps avant la cérémonie le créer ?", "date": "2026-07-11", "status": "pending"},
-  {"title": "Comment personnaliser son site de mariage pour qu'il vous ressemble", "date": "2026-07-16", "status": "pending"},
-  {"title": "Mariage en Provence : pourquoi un site web est indispensable", "date": "2026-07-21", "status": "pending"},
-  {"title": "Site de mariage ou faire-part numérique : quelle différence ?", "date": "2026-07-26", "status": "pending"},
-
-  {"title": "Les informations indispensables à mettre sur votre site de mariage", "date": "2026-08-01", "status": "pending"},
-  {"title": "Comment gérer les RSVP en ligne pour votre mariage", "date": "2026-08-06", "status": "pending"},
-  {"title": "Site de mariage : les tendances design en 2026", "date": "2026-08-11", "status": "pending"},
-  {"title": "Mariage en hiver : comment adapter son site web à la saison", "date": "2026-08-16", "status": "pending"},
-  {"title": "Comment annoncer votre mariage avec un site web élégant", "date": "2026-08-21", "status": "pending"},
-  {"title": "Site de mariage bilingue : la solution pour les couples internationaux", "date": "2026-08-26", "status": "pending"},
-
-  {"title": "Pourquoi les couples choisissent un site de mariage plutôt que les réseaux sociaux", "date": "2026-09-01", "status": "pending"},
-  {"title": "Comment choisir les photos pour son site de mariage", "date": "2026-09-06", "status": "pending"},
-  {"title": "Site de mariage : faut-il protéger ses photos par mot de passe ?", "date": "2026-09-11", "status": "pending"},
-  {"title": "Mariage à Nice : l'importance d'un site web pour vos invités", "date": "2026-09-16", "status": "pending"},
-  {"title": "Comment intégrer votre liste de mariage à votre site web", "date": "2026-09-21", "status": "pending"},
-  {"title": "Site de mariage : comment partager les informations pratiques avec vos invités", "date": "2026-09-26", "status": "pending"},
-
-  {"title": "Mariage en château : comment votre site web impressionne vos invités", "date": "2026-10-01", "status": "pending"},
-  {"title": "Comment raconter votre histoire d'amour sur votre site de mariage", "date": "2026-10-06", "status": "pending"},
-  {"title": "Site de mariage : les questions que posent tous les couples", "date": "2026-10-11", "status": "pending"},
-  {"title": "Mariage éco-responsable : pourquoi le site web remplace le papier", "date": "2026-10-16", "status": "pending"},
-  {"title": "Comment créer un compte à rebours élégant sur votre site de mariage", "date": "2026-10-21", "status": "pending"},
-  {"title": "Site de mariage : comment gérer les régimes alimentaires de vos invités", "date": "2026-10-26", "status": "pending"},
-
-  {"title": "Pourquoi investir dans un site de mariage sur-mesure vaut le coup", "date": "2026-11-01", "status": "pending"},
-  {"title": "Site de mariage : combien ça coûte vraiment en 2026 ?", "date": "2026-11-06", "status": "pending"},
-  {"title": "Comment optimiser votre site de mariage pour les mobiles", "date": "2026-11-11", "status": "pending"},
-  {"title": "Mariage destination : le site web qui guide vos invités de A à Z", "date": "2026-11-16", "status": "pending"},
-  {"title": "Site de mariage : les fonctionnalités qui font vraiment la différence", "date": "2026-11-21", "status": "pending"},
-  {"title": "Comment choisir la palette de couleurs de votre site de mariage", "date": "2026-11-26", "status": "pending"},
-
-  {"title": "Mariage en décembre : créer un site web aux couleurs de l'hiver", "date": "2026-12-01", "status": "pending"},
-  {"title": "Bilan 2026 : les tendances mariage qui ont marqué l'année", "date": "2026-12-06", "status": "pending"},
-  {"title": "Site de mariage : comment inclure votre plan de table en ligne", "date": "2026-12-11", "status": "pending"},
-  {"title": "Préparez votre mariage 2027 : commencer par le site web", "date": "2026-12-16", "status": "pending"},
-  {"title": "Mariage bohème : les codes visuels pour votre site web", "date": "2026-12-21", "status": "pending"},
-  {"title": "Comment remercier vos invités via votre site de mariage", "date": "2026-12-26", "status": "pending"},
-
-  {"title": "Site de mariage en 2027 : ce qui va changer", "date": "2027-01-01", "status": "pending"},
-  {"title": "Mariage au printemps : préparez votre site web dès janvier", "date": "2027-01-06", "status": "pending"},
-  {"title": "Comment rédiger le texte de bienvenue parfait pour votre site de mariage", "date": "2027-01-11", "status": "pending"},
-  {"title": "Site de mariage : les photos qui captivent vos invités", "date": "2027-01-16", "status": "pending"},
-  {"title": "Mariage champêtre : créer un site web rustique et élégant", "date": "2027-01-21", "status": "pending"},
-  {"title": "Pourquoi votre site de mariage doit être prêt 6 mois avant", "date": "2027-01-26", "status": "pending"},
-
-  {"title": "Site de mariage : comment annoncer un changement de programme", "date": "2027-02-01", "status": "pending"},
-  {"title": "Saint-Valentin et mariage : profitez-en pour lancer votre site", "date": "2027-02-06", "status": "pending"},
-  {"title": "Comment intégrer une galerie photo élégante à votre site de mariage", "date": "2027-02-11", "status": "pending"},
-  {"title": "Mariage laïque : comment votre site web crée l'émotion avant le jour J", "date": "2027-02-16", "status": "pending"},
-  {"title": "Site de mariage : les erreurs de texte qui font fuir vos invités", "date": "2027-02-21", "status": "pending"},
-  {"title": "Couple franco-étranger : pourquoi un site de mariage multilingue est essentiel", "date": "2027-02-26", "status": "pending"},
-
-  {"title": "Site de mariage : préparez le compte à rebours du printemps", "date": "2027-03-01", "status": "pending"},
-  {"title": "Mariage en juin 2027 : votre site web doit être en ligne maintenant", "date": "2027-03-06", "status": "pending"},
-  {"title": "Comment coordonner votre site de mariage avec votre faire-part papier", "date": "2027-03-11", "status": "pending"},
-  {"title": "Site de mariage : comment présenter le déroulé de votre journée", "date": "2027-03-16", "status": "pending"},
-  {"title": "Mariage en Côte d'Azur : attirez vos invités avec un site web inoubliable", "date": "2027-03-21", "status": "pending"},
-  {"title": "Comment protéger la vie privée de vos invités sur votre site de mariage", "date": "2027-03-26", "status": "pending"},
-
-  {"title": "Site de mariage : comment créer la page 'Notre histoire' parfaite", "date": "2027-04-01", "status": "pending"},
-  {"title": "Mariage avec enfants : comment adapter votre site web aux familles", "date": "2027-04-06", "status": "pending"},
-  {"title": "Les témoignages de couples qui ont créé leur site de mariage avec Etrah", "date": "2027-04-11", "status": "pending"},
-  {"title": "Site de mariage : comment intégrer votre playlist de cérémonie", "date": "2027-04-16", "status": "pending"},
-  {"title": "Mariage en extérieur : préparez un plan B sur votre site web", "date": "2027-04-21", "status": "pending"},
-  {"title": "Comment votre site de mariage facilite le travail de vos prestataires", "date": "2027-04-26", "status": "pending"},
-
-  {"title": "Mariage en mai : les derniers détails à vérifier sur votre site web", "date": "2027-05-01", "status": "pending"},
-  {"title": "Site de mariage : comment afficher un hébergement pour vos invités", "date": "2027-05-06", "status": "pending"},
-  {"title": "Mariage boho chic : les inspirations visuelles pour votre site", "date": "2027-05-11", "status": "pending"},
-  {"title": "Site de mariage : pourquoi le noir et blanc reste indémodable", "date": "2027-05-16", "status": "pending"},
-  {"title": "Comment partager les vidéos de votre mariage via votre site web", "date": "2027-05-21", "status": "pending"},
-  {"title": "Site de mariage : la checklist complète avant le jour J", "date": "2027-05-26", "status": "pending"},
-
-  {"title": "Après le mariage : transformer votre site en livre de souvenirs", "date": "2027-06-01", "status": "pending"},
-  {"title": "Site de mariage : comment partager les photos officielles avec vos invités", "date": "2027-06-06", "status": "pending"},
-  {"title": "Mariage en été 2027 : les tendances site web à adopter", "date": "2027-06-11", "status": "pending"},
-  {"title": "Comment votre site de mariage peut aider votre photographe", "date": "2027-06-16", "status": "pending"},
-  {"title": "Site de mariage : les couleurs tendance pour la saison estivale", "date": "2027-06-21", "status": "pending"},
-  {"title": "Bilan : ce que les couples retiennent de leur site de mariage un an après", "date": "2027-06-26", "status": "pending"}
+  {
+    "title": "Pourquoi créer un site de mariage change tout à votre organisation",
+    "date": "2026-06-22",
+    "status": "pending"
+  },
+  {
+    "title": "Les 5 erreurs à éviter absolument sur un site de mariage",
+    "date": "2026-06-27",
+    "status": "pending"
+  },
+  {
+    "title": "Site de mariage : combien de temps avant la cérémonie le créer ?",
+    "date": "2026-07-02",
+    "status": "pending"
+  },
+  {
+    "title": "Comment personnaliser son site de mariage pour qu'il vous ressemble",
+    "date": "2026-07-07",
+    "status": "pending"
+  },
+  {
+    "title": "Mariage en Provence : pourquoi un site web est indispensable",
+    "date": "2026-07-12",
+    "status": "pending"
+  },
+  {
+    "title": "Site de mariage ou faire-part numérique : quelle différence ?",
+    "date": "2026-07-17",
+    "status": "pending"
+  },
+  {
+    "title": "Les informations indispensables à mettre sur votre site de mariage",
+    "date": "2026-07-22",
+    "status": "pending"
+  },
+  {
+    "title": "Comment gérer les RSVP en ligne pour votre mariage",
+    "date": "2026-07-27",
+    "status": "pending"
+  },
+  {
+    "title": "Site de mariage : les tendances design en 2026",
+    "date": "2026-08-01",
+    "status": "pending"
+  },
+  {
+    "title": "Mariage en hiver : comment adapter son site web à la saison",
+    "date": "2026-08-06",
+    "status": "pending"
+  },
+  {
+    "title": "Comment annoncer votre mariage avec un site web élégant",
+    "date": "2026-08-11",
+    "status": "pending"
+  },
+  {
+    "title": "Site de mariage bilingue : la solution pour les couples internationaux",
+    "date": "2026-08-16",
+    "status": "pending"
+  },
+  {
+    "title": "Pourquoi les couples choisissent un site de mariage plutôt que les réseaux sociaux",
+    "date": "2026-08-21",
+    "status": "pending"
+  },
+  {
+    "title": "Comment choisir les photos pour son site de mariage",
+    "date": "2026-08-26",
+    "status": "pending"
+  },
+  {
+    "title": "Site de mariage : faut-il protéger ses photos par mot de passe ?",
+    "date": "2026-08-31",
+    "status": "pending"
+  },
+  {
+    "title": "Mariage à Nice : l'importance d'un site web pour vos invités",
+    "date": "2026-09-05",
+    "status": "pending"
+  },
+  {
+    "title": "Comment intégrer votre liste de mariage à votre site web",
+    "date": "2026-09-10",
+    "status": "pending"
+  },
+  {
+    "title": "Site de mariage : comment partager les informations pratiques avec vos invités",
+    "date": "2026-09-15",
+    "status": "pending"
+  },
+  {
+    "title": "Mariage en château : comment votre site web impressionne vos invités",
+    "date": "2026-09-20",
+    "status": "pending"
+  },
+  {
+    "title": "Comment raconter votre histoire d'amour sur votre site de mariage",
+    "date": "2026-09-25",
+    "status": "pending"
+  },
+  {
+    "title": "Site de mariage : les questions que posent tous les couples",
+    "date": "2026-09-30",
+    "status": "pending"
+  },
+  {
+    "title": "Mariage éco-responsable : pourquoi le site web remplace le papier",
+    "date": "2026-10-05",
+    "status": "pending"
+  },
+  {
+    "title": "Comment créer un compte à rebours élégant sur votre site de mariage",
+    "date": "2026-10-10",
+    "status": "pending"
+  },
+  {
+    "title": "Site de mariage : comment gérer les régimes alimentaires de vos invités",
+    "date": "2026-10-15",
+    "status": "pending"
+  },
+  {
+    "title": "Pourquoi investir dans un site de mariage sur-mesure vaut le coup",
+    "date": "2026-10-20",
+    "status": "pending"
+  },
+  {
+    "title": "Site de mariage : combien ça coûte vraiment en 2026 ?",
+    "date": "2026-10-25",
+    "status": "pending"
+  },
+  {
+    "title": "Comment optimiser votre site de mariage pour les mobiles",
+    "date": "2026-10-30",
+    "status": "pending"
+  },
+  {
+    "title": "Mariage destination : le site web qui guide vos invités de A à Z",
+    "date": "2026-11-04",
+    "status": "pending"
+  },
+  {
+    "title": "Site de mariage : les fonctionnalités qui font vraiment la différence",
+    "date": "2026-11-09",
+    "status": "pending"
+  },
+  {
+    "title": "Comment choisir la palette de couleurs de votre site de mariage",
+    "date": "2026-11-14",
+    "status": "pending"
+  },
+  {
+    "title": "Mariage en décembre : créer un site web aux couleurs de l'hiver",
+    "date": "2026-11-19",
+    "status": "pending"
+  },
+  {
+    "title": "Bilan 2026 : les tendances mariage qui ont marqué l'année",
+    "date": "2026-11-24",
+    "status": "pending"
+  },
+  {
+    "title": "Site de mariage : comment inclure votre plan de table en ligne",
+    "date": "2026-11-29",
+    "status": "pending"
+  },
+  {
+    "title": "Préparez votre mariage 2027 : commencer par le site web",
+    "date": "2026-12-04",
+    "status": "pending"
+  },
+  {
+    "title": "Mariage bohème : les codes visuels pour votre site web",
+    "date": "2026-12-09",
+    "status": "pending"
+  },
+  {
+    "title": "Comment remercier vos invités via votre site de mariage",
+    "date": "2026-12-14",
+    "status": "pending"
+  },
+  {
+    "title": "Site de mariage en 2027 : ce qui va changer",
+    "date": "2026-12-19",
+    "status": "pending"
+  },
+  {
+    "title": "Mariage au printemps : préparez votre site web dès janvier",
+    "date": "2026-12-24",
+    "status": "pending"
+  },
+  {
+    "title": "Comment rédiger le texte de bienvenue parfait pour votre site de mariage",
+    "date": "2026-12-29",
+    "status": "pending"
+  },
+  {
+    "title": "Site de mariage : les photos qui captivent vos invités",
+    "date": "2027-01-03",
+    "status": "pending"
+  },
+  {
+    "title": "Mariage champêtre : créer un site web rustique et élégant",
+    "date": "2027-01-08",
+    "status": "pending"
+  },
+  {
+    "title": "Pourquoi votre site de mariage doit être prêt 6 mois avant",
+    "date": "2027-01-13",
+    "status": "pending"
+  },
+  {
+    "title": "Site de mariage : comment annoncer un changement de programme",
+    "date": "2027-01-18",
+    "status": "pending"
+  },
+  {
+    "title": "Saint-Valentin et mariage : profitez-en pour lancer votre site",
+    "date": "2027-01-23",
+    "status": "pending"
+  },
+  {
+    "title": "Comment intégrer une galerie photo élégante à votre site de mariage",
+    "date": "2027-01-28",
+    "status": "pending"
+  },
+  {
+    "title": "Mariage laïque : comment votre site web crée l'émotion avant le jour J",
+    "date": "2027-02-02",
+    "status": "pending"
+  },
+  {
+    "title": "Site de mariage : les erreurs de texte qui font fuir vos invités",
+    "date": "2027-02-07",
+    "status": "pending"
+  },
+  {
+    "title": "Couple franco-étranger : pourquoi un site de mariage multilingue est essentiel",
+    "date": "2027-02-12",
+    "status": "pending"
+  },
+  {
+    "title": "Site de mariage : préparez le compte à rebours du printemps",
+    "date": "2027-02-17",
+    "status": "pending"
+  },
+  {
+    "title": "Mariage en juin 2027 : votre site web doit être en ligne maintenant",
+    "date": "2027-02-22",
+    "status": "pending"
+  },
+  {
+    "title": "Comment coordonner votre site de mariage avec votre faire-part papier",
+    "date": "2027-02-27",
+    "status": "pending"
+  },
+  {
+    "title": "Site de mariage : comment présenter le déroulé de votre journée",
+    "date": "2027-03-04",
+    "status": "pending"
+  },
+  {
+    "title": "Mariage en Côte d'Azur : attirez vos invités avec un site web inoubliable",
+    "date": "2027-03-09",
+    "status": "pending"
+  },
+  {
+    "title": "Comment protéger la vie privée de vos invités sur votre site de mariage",
+    "date": "2027-03-14",
+    "status": "pending"
+  },
+  {
+    "title": "Site de mariage : comment créer la page Notre histoire parfaite",
+    "date": "2027-03-19",
+    "status": "pending"
+  },
+  {
+    "title": "Mariage avec enfants : comment adapter votre site web aux familles",
+    "date": "2027-03-24",
+    "status": "pending"
+  },
+  {
+    "title": "Les témoignages de couples qui ont créé leur site de mariage avec Etrah",
+    "date": "2027-03-29",
+    "status": "pending"
+  },
+  {
+    "title": "Site de mariage : comment intégrer votre playlist de cérémonie",
+    "date": "2027-04-03",
+    "status": "pending"
+  },
+  {
+    "title": "Mariage en extérieur : préparez un plan B sur votre site web",
+    "date": "2027-04-08",
+    "status": "pending"
+  },
+  {
+    "title": "Comment votre site de mariage facilite le travail de vos prestataires",
+    "date": "2027-04-13",
+    "status": "pending"
+  },
+  {
+    "title": "Mariage en mai : les derniers détails à vérifier sur votre site web",
+    "date": "2027-04-18",
+    "status": "pending"
+  },
+  {
+    "title": "Site de mariage : comment afficher les hébergements pour vos invités",
+    "date": "2027-04-23",
+    "status": "pending"
+  },
+  {
+    "title": "Mariage boho chic : les inspirations visuelles pour votre site",
+    "date": "2027-04-28",
+    "status": "pending"
+  },
+  {
+    "title": "Site de mariage : pourquoi le noir et blanc reste indémodable",
+    "date": "2027-05-03",
+    "status": "pending"
+  },
+  {
+    "title": "Comment partager les vidéos de votre mariage via votre site web",
+    "date": "2027-05-08",
+    "status": "pending"
+  },
+  {
+    "title": "Site de mariage : la checklist complète avant le jour J",
+    "date": "2027-05-13",
+    "status": "pending"
+  },
+  {
+    "title": "Après le mariage : transformer votre site en livre de souvenirs",
+    "date": "2027-05-18",
+    "status": "pending"
+  },
+  {
+    "title": "Site de mariage : comment partager les photos officielles avec vos invités",
+    "date": "2027-05-23",
+    "status": "pending"
+  },
+  {
+    "title": "Mariage en été 2027 : les tendances site web à adopter",
+    "date": "2027-05-28",
+    "status": "pending"
+  },
+  {
+    "title": "Comment votre site de mariage peut aider votre photographe",
+    "date": "2027-06-02",
+    "status": "pending"
+  },
+  {
+    "title": "Site de mariage : les couleurs tendance pour la saison estivale",
+    "date": "2027-06-07",
+    "status": "pending"
+  },
+  {
+    "title": "Bilan : ce que les couples retiennent de leur site de mariage un an après",
+    "date": "2027-06-12",
+    "status": "pending"
+  },
+  {
+    "title": "Site de mariage : comment gérer les invités de dernière minute",
+    "date": "2027-06-17",
+    "status": "pending"
+  },
+  {
+    "title": "Mariage en Normandie : créer un site web qui reflète votre région",
+    "date": "2027-06-22",
+    "status": "pending"
+  },
+  {
+    "title": "Comment écrire des vœux inoubliables et les partager sur votre site",
+    "date": "2027-06-27",
+    "status": "pending"
+  },
+  {
+    "title": "Site de mariage : faut-il une version imprimable pour vos invités ?",
+    "date": "2027-07-02",
+    "status": "pending"
+  },
+  {
+    "title": "Mariage végane : comment communiquer vos valeurs via votre site web",
+    "date": "2027-07-07",
+    "status": "pending"
+  },
+  {
+    "title": "Site de mariage : les meilleures polices pour un rendu élégant",
+    "date": "2027-07-12",
+    "status": "pending"
+  },
+  {
+    "title": "Comment intégrer Google Maps à votre site de mariage",
+    "date": "2027-07-17",
+    "status": "pending"
+  },
+  {
+    "title": "Mariage en Bretagne : inspirations pour un site web authentique",
+    "date": "2027-07-22",
+    "status": "pending"
+  },
+  {
+    "title": "Site de mariage : comment présenter vos témoins avec style",
+    "date": "2027-07-27",
+    "status": "pending"
+  },
+  {
+    "title": "Pourquoi les mariages de 2028 misent tout sur le numérique",
+    "date": "2027-08-01",
+    "status": "pending"
+  },
+  {
+    "title": "Site de mariage : comment créer une FAQ pour vos invités",
+    "date": "2027-08-06",
+    "status": "pending"
+  },
+  {
+    "title": "Mariage en Alsace : traditions et site web moderne, le bon équilibre",
+    "date": "2027-08-11",
+    "status": "pending"
+  },
+  {
+    "title": "Comment votre site de mariage devient un souvenir permanent",
+    "date": "2027-08-16",
+    "status": "pending"
+  },
+  {
+    "title": "Site de mariage : les tendances typographiques en 2027",
+    "date": "2027-08-21",
+    "status": "pending"
+  },
+  {
+    "title": "Mariage civil et religieux : comment tout expliquer sur votre site web",
+    "date": "2027-08-26",
+    "status": "pending"
+  },
+  {
+    "title": "Comment animer votre site de mariage avec des vidéos courtes",
+    "date": "2027-08-31",
+    "status": "pending"
+  },
+  {
+    "title": "Site de mariage : pourquoi avoir un domaine personnalisé",
+    "date": "2027-09-05",
+    "status": "pending"
+  },
+  {
+    "title": "Mariage en automne : créer un site web aux couleurs de la saison",
+    "date": "2027-09-10",
+    "status": "pending"
+  },
+  {
+    "title": "Comment présenter votre traiteur et menu sur votre site de mariage",
+    "date": "2027-09-15",
+    "status": "pending"
+  },
+  {
+    "title": "Site de mariage : les fonctionnalités préférées des couples en 2027",
+    "date": "2027-09-20",
+    "status": "pending"
+  },
+  {
+    "title": "Mariage en montagne : comment préparer vos invités via votre site web",
+    "date": "2027-09-25",
+    "status": "pending"
+  },
+  {
+    "title": "Comment votre site de mariage peut remplacer le wedding planner",
+    "date": "2027-09-30",
+    "status": "pending"
+  },
+  {
+    "title": "Site de mariage : comment gérer les allergies alimentaires en ligne",
+    "date": "2027-10-05",
+    "status": "pending"
+  },
+  {
+    "title": "Mariage en Languedoc : vignobles et site web sur-mesure",
+    "date": "2027-10-10",
+    "status": "pending"
+  },
+  {
+    "title": "Comment choisir entre un site de mariage gratuit et premium",
+    "date": "2027-10-15",
+    "status": "pending"
+  },
+  {
+    "title": "Site de mariage : les mises à jour importantes à faire avant le jour J",
+    "date": "2027-10-20",
+    "status": "pending"
+  },
+  {
+    "title": "Mariage franco-américain : un site web bilingue pour tous vos invités",
+    "date": "2027-10-25",
+    "status": "pending"
+  },
+  {
+    "title": "Comment votre site de mariage peut devenir viral sur Instagram",
+    "date": "2027-10-30",
+    "status": "pending"
+  },
+  {
+    "title": "Site de mariage : créer une ambiance musicale dès la page d'accueil",
+    "date": "2027-11-04",
+    "status": "pending"
+  },
+  {
+    "title": "Mariage en 2028 : les nouvelles attentes des couples",
+    "date": "2027-11-09",
+    "status": "pending"
+  },
+  {
+    "title": "Comment garder votre site de mariage actif après la cérémonie",
+    "date": "2027-11-14",
+    "status": "pending"
+  },
+  {
+    "title": "Site de mariage : les secrets d'un design qui fait rêver",
+    "date": "2027-11-19",
+    "status": "pending"
+  },
+  {
+    "title": "Mariage tardif : comment un site web facilite l'organisation à distance",
+    "date": "2027-11-24",
+    "status": "pending"
+  },
+  {
+    "title": "Comment intégrer un livre d'or numérique à votre site de mariage",
+    "date": "2027-11-29",
+    "status": "pending"
+  },
+  {
+    "title": "Site de mariage : pourquoi Etrah est la référence en France",
+    "date": "2027-12-04",
+    "status": "pending"
+  },
+  {
+    "title": "Mariage en Bordeaux : entre châteaux et site web moderne",
+    "date": "2027-12-09",
+    "status": "pending"
+  },
+  {
+    "title": "Comment rendre votre site de mariage accessible aux personnes âgées",
+    "date": "2027-12-14",
+    "status": "pending"
+  },
+  {
+    "title": "Site de mariage : les erreurs SEO qui nuisent à votre visibilité",
+    "date": "2027-12-19",
+    "status": "pending"
+  },
+  {
+    "title": "Mariage surprise : comment révéler les détails progressivement sur votre site",
+    "date": "2027-12-24",
+    "status": "pending"
+  },
+  {
+    "title": "Comment votre site de mariage impressionne dès la première visite",
+    "date": "2027-12-29",
+    "status": "pending"
+  },
+  {
+    "title": "Site de mariage : les tendances 2028 que vous devez connaître",
+    "date": "2028-01-03",
+    "status": "pending"
+  },
+  {
+    "title": "Mariage en Corse : authenticité et site web sur-mesure",
+    "date": "2028-01-08",
+    "status": "pending"
+  },
+  {
+    "title": "Comment utiliser votre site de mariage pour collecter les souhaits de cadeaux",
+    "date": "2028-01-13",
+    "status": "pending"
+  },
+  {
+    "title": "Site de mariage : créer une timeline visuelle de votre journée",
+    "date": "2028-01-18",
+    "status": "pending"
+  },
+  {
+    "title": "Mariage intime : comment un site web crée un lien fort avec vos 30 invités",
+    "date": "2028-01-23",
+    "status": "pending"
+  },
+  {
+    "title": "Comment présenter votre lieu de réception sur votre site de mariage",
+    "date": "2028-01-28",
+    "status": "pending"
+  },
+  {
+    "title": "Site de mariage : les mots-clés qui attirent vos invités en ligne",
+    "date": "2028-02-02",
+    "status": "pending"
+  },
+  {
+    "title": "Mariage en Périgord : gastronomie et site web élégant",
+    "date": "2028-02-07",
+    "status": "pending"
+  },
+  {
+    "title": "Comment votre site de mariage peut simplifier votre liste de cadeaux",
+    "date": "2028-02-12",
+    "status": "pending"
+  },
+  {
+    "title": "Site de mariage : les animations qui enchantent vos invités",
+    "date": "2028-02-17",
+    "status": "pending"
+  },
+  {
+    "title": "Mariage en Pays de la Loire : châteaux et sites web sur-mesure",
+    "date": "2028-02-22",
+    "status": "pending"
+  },
+  {
+    "title": "Comment créer un site de mariage qui reflète votre couple en 2028",
+    "date": "2028-02-27",
+    "status": "pending"
+  },
+  {
+    "title": "Site de mariage : la révolution numérique dans l'organisation des noces",
+    "date": "2028-03-03",
+    "status": "pending"
+  },
+  {
+    "title": "Mariage en Savoie : montagne, neige et site web élégant",
+    "date": "2028-03-08",
+    "status": "pending"
+  },
+  {
+    "title": "Comment mesurer l'impact de votre site de mariage sur vos invités",
+    "date": "2028-03-13",
+    "status": "pending"
+  },
+  {
+    "title": "Site de mariage : les tendances couleurs pour finir 2028 en beauté",
+    "date": "2028-03-18",
+    "status": "pending"
+  }
 ]
