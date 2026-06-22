@@ -188,12 +188,13 @@ nav{{position:fixed;top:0;left:0;right:0;z-index:500;padding:20px 52px;display:f
 .stat{{background:linear-gradient(135deg,var(--ink) 0%,#2d2010 100%);padding:28px 36px;margin:40px 0;display:flex;align-items:center;gap:28px}}
 .stat-n{{font-family:'Cormorant Garamond',serif;font-weight:300;font-size:52px;color:var(--gold2);line-height:1;flex-shrink:0}}
 .stat-t{{font-style:italic;font-size:17px;color:rgba(253,250,245,.82);line-height:1.75}}
-.cta-mid{{background:var(--cream2);padding:0 40px 60px;max-width:740px;margin:0 auto}}
-.cta-inner{{border:1px solid rgba(184,146,42,.2);padding:36px 40px;text-align:center}}
-.cta-ey{{font-family:'Josefin Sans',sans-serif;font-weight:200;font-size:8px;letter-spacing:6px;text-transform:uppercase;color:var(--gold);margin-bottom:16px}}
-.cta-title{{font-style:italic;font-weight:300;font-size:clamp(22px,3vw,30px);color:var(--ink);margin-bottom:28px;line-height:1.25}}
-.cta-btn{{font-family:'Josefin Sans',sans-serif;font-weight:200;font-size:9px;letter-spacing:5px;text-transform:uppercase;color:var(--white);background:var(--gold);padding:16px 36px;text-decoration:none;display:inline-block;transition:background .3s}}
-.cta-btn:hover{{background:var(--gold2)}}
+.article-form-cta{{max-width:740px;margin:0 auto;padding:0 40px 48px}}
+.afc-inner{{border:1px solid rgba(184,146,42,.18);padding:36px 40px;background:rgba(184,146,42,.03);text-align:center}}
+.afc-eyebrow{{font-family:'Josefin Sans',sans-serif;font-weight:200;font-size:7px;letter-spacing:7px;text-transform:uppercase;color:var(--gold);margin-bottom:12px}}
+.afc-title{{font-family:'Cormorant Garamond',serif;font-style:italic;font-weight:300;font-size:26px;color:var(--ink);line-height:1.2;margin-bottom:10px}}
+.afc-sub{{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:15px;color:var(--ink3);line-height:1.7;margin-bottom:24px}}
+.afc-btn{{display:inline-block;font-family:'Josefin Sans',sans-serif;font-weight:200;font-size:8px;letter-spacing:5px;text-transform:uppercase;color:var(--white);background:var(--ink);padding:13px 32px;text-decoration:none;transition:background .3s}}
+.afc-btn:hover{{background:var(--gold)}}
 .related{{max-width:740px;margin:0 auto;padding:0 40px 64px}}
 .rl{{padding-top:28px;border-top:1px solid rgba(184,146,42,.12);margin-bottom:24px;font-family:'Josefin Sans',sans-serif;font-weight:200;font-size:8px;letter-spacing:7px;text-transform:uppercase;color:var(--gold)}}
 .rg{{display:grid;grid-template-columns:1fr 1fr;gap:16px}}
@@ -254,11 +255,14 @@ footer{{background:var(--white);border-top:1px solid rgba(184,146,42,.12);paddin
     </div>
   </div>
 
-  <div class="cta-mid"><div class="cta-inner">
-    <p class="cta-ey">Etrah · Sur-mesure</p>
-    <h2 class="cta-title">Votre site de mariage, unique et inoubliable</h2>
-    <a class="cta-btn" href="index.html#contact">Démarrer mon projet</a>
-  </div></div>
+  <div class="article-form-cta">
+    <div class="afc-inner">
+      <p class="afc-eyebrow">Prêts à vous lancer ?</p>
+      <h3 class="afc-title">Démarrez votre projet<br>en 2 minutes</h3>
+      <p class="afc-sub">Dites-nous tout sur votre mariage — nous revenons vers vous sous 24h avec une proposition personnalisée.</p>
+      <a class="afc-btn" href="index.html#contact">Démarrer mon projet →</a>
+    </div>
+  </div>
 
 
   <div class="author">
