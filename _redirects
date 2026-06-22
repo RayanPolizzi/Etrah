@@ -1,7 +1,3 @@
-# Force www
-http://site-mariage.com/*  https://www.site-mariage.com/:splat  301!
-https://site-mariage.com/*  https://www.site-mariage.com/:splat  301!
-
 # Pages légales sans .html
 /mentions-legales    /mentions-legales.html    200
 /politique-confidentialite    /politique-confidentialite.html    200
