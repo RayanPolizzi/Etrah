@@ -454,14 +454,4 @@ def main():
 
         # Index
         try:
-            update_index(title, slug, category, DATE_FR, hero_url, excerpt)
-            print("   ✓ index.html mis à jour")
-        except Exception as e:
-            print(f"   ⚠ index : {e}")
-
-        print(f"   → {SITE_URL}/{slug}.html")
-
-    print("\n✦  Terminé. Déploie le dossier sur Netlify pour mettre en ligne.\n")
-
-if __name__ == "__main__":
-    main()
+            update_index(tit
