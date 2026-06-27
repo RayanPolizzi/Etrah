@@ -390,6 +390,41 @@
   }
   .btn-send:hover { background: var(--gold2); }
   .btn-send:disabled { opacity: .5; cursor: default; }
+
+  /* ── VALIDATION ── */
+  .field-error input[type="text"],
+  .field-error input[type="date"],
+  .field-error input[type="email"],
+  .field-error textarea {
+    border-color: #c0392b !important;
+    background: #fff5f5 !important;
+  }
+  .field-error > label { color: #c0392b !important; }
+  .field-error > label .opt { color: #c0392b !important; opacity: .7; }
+  .check-grid-error {
+    outline: 2px solid #c0392b;
+    outline-offset: 6px;
+    border-radius: 2px;
+  }
+  .table-error { outline: 2px solid #c0392b; outline-offset: 4px; }
+  .validation-banner {
+    display: none;
+    position: fixed;
+    top: 24px;
+    right: 24px;
+    z-index: 9999;
+    background: #fff;
+    border-left: 4px solid #c0392b;
+    box-shadow: 0 4px 24px rgba(0,0,0,.15);
+    color: #c0392b;
+    font-family: 'Josefin Sans', sans-serif;
+    font-size: 11px;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    padding: 18px 28px;
+    line-height: 1.9;
+    max-width: 320px;
+  }
   .copy-ok {
     display: none;
     font-family: 'Josefin Sans', sans-serif;
@@ -718,8 +753,9 @@
   <!-- GÉNÉRATION DU RÉSUMÉ -->
   <div class="submit-zone">
     <h2 class="submit-title">Prêt(e)s à <em>envoyer</em> ?</h2>
-    <p class="submit-sub">Générez votre résumé · Envoyez-le directement à Rayan par email</p>
-    <button class="btn-generate" onclick="generateResume()">Générer mon résumé →</button>
+    <p class="submit-sub">Remplissez le formulaire · Envoyez votre brief directement à Rayan</p>
+    <div class="validation-banner" id="validation-banner"></div>
+    <button class="btn-generate" onclick="generateResume()">Envoyer mon brief à Rayan →</button>
 
     <div class="result-zone" id="result-zone">
       <p class="result-label">Votre résumé — vérifiez avant d'envoyer</p>
@@ -774,14 +810,89 @@
     if (!txt.value || txt.value.startsWith('#')) txt.value = this.value;
   });
 
-  // ── GÉNÉRATION DU RÉSUMÉ ─────────────────────────────────────
+  // ── VALIDATION ──────────────────────────────────────────────
+  function validateForm() {
+    // Reset
+    document.querySelectorAll('.field-error').forEach(f => f.classList.remove('field-error'));
+    document.querySelectorAll('.check-grid-error').forEach(f => f.classList.remove('check-grid-error'));
+    document.querySelectorAll('.table-error').forEach(f => f.classList.remove('table-error'));
+
+    var errors = [];
+    var firstEl = null;
+
+    function flag(id) {
+      var el = document.getElementById(id);
+      if (!el) return;
+      // Highlight the input/textarea itself directly
+      el.style.borderColor = '#c0392b';
+      el.style.background  = '#fff5f5';
+      // Also flag the parent .field for label color
+      var field = el.closest ? el.closest('.field') : null;
+      if (field) field.classList.add('field-error');
+      if (!firstEl) firstEl = el;
+      errors.push(id);
+    }
+
+    function clear(id) {
+      var el = document.getElementById(id);
+      if (!el) return;
+      el.style.borderColor = '';
+      el.style.background  = '';
+    }
+
+    // Reset all field inline styles first
+    ['prenom1','prenom2','date-mariage','email-invites','histoire',
+     'styles','ambiance','couleur1-txt','inspirations',
+     'photo-principale',
+     'lieu-ceremonie','adresse-ceremonie','dresscode',
+     'message-accueil','rsvp-date','nb-invites'
+    ].forEach(function(id) { clear(id); });
+
+    // Check required fields
+    ['prenom1','prenom2','date-mariage','email-invites','histoire',
+     'styles','ambiance','couleur1-txt','inspirations',
+     'photo-principale',
+     'lieu-ceremonie','adresse-ceremonie','dresscode',
+     'message-accueil','rsvp-date','nb-invites'
+    ].forEach(function(id) {
+      var el = document.getElementById(id);
+      if (!el || !el.value.trim()) flag(id);
+    });
+
+    // Programme — au moins 1 étape
+    var rows = document.querySelectorAll('#prog-body .prog-row');
+    var hasEtape = false;
+    for (var i = 0; i < rows.length; i++) {
+      var inputs = rows[i].querySelectorAll('input');
+      if (inputs[1] && inputs[1].value.trim() !== '') { hasEtape = true; break; }
+    }
+    if (!hasEtape) {
+      var table = document.getElementById('prog-table');
+      if (table) { table.style.outline = '2px solid #c0392b'; if (!firstEl) firstEl = table; }
+      errors.push('programme');
+    } else {
+      var t = document.getElementById('prog-table');
+      if (t) t.style.outline = '';
+    }
+
+    // Sections — au moins 1 cochée
+    if (document.querySelectorAll('#sections .check-item.checked').length === 0) {
+      var grid = document.getElementById('sections');
+      if (grid) { grid.classList.add('check-grid-error'); if (!firstEl) firstEl = grid; }
+      errors.push('sections');
+    }
+
+    return { count: errors.length, firstEl: firstEl };
+  }
+
+  // ── GÉNÉRATION DU RÉSUMÉ ─────────────────────────────
   function val(id) {
     const el = document.getElementById(id);
     return el ? (el.value || '').trim() : '';
   }
 
   function getChecked(containerId) {
-    const items = document.querySelectorAll(`#${containerId} .check-item.checked .check-label`);
+    const items = document.querySelectorAll('#' + containerId + ' .check-item.checked .check-label');
     return Array.from(items).map(i => i.textContent.trim()).join(', ');
   }
 
@@ -794,8 +905,8 @@
       const etape = inputs[1].value.trim();
       const lieu  = inputs[2].value.trim();
       if (etape) {
-        let line = `  ${heure || '??:??'} — ${etape}`;
-        if (lieu) line += ` (${lieu})`;
+        let line = '  ' + (heure || '??:??') + ' — ' + etape;
+        if (lieu) line += ' (' + lieu + ')';
         lines.push(line);
       }
     });
@@ -810,55 +921,130 @@
   }
 
   function generateResume() {
+    var v = validateForm();
+    var banner = document.getElementById('validation-banner');
+    if (v.count > 0) {
+      banner.style.display = 'block';
+      banner.innerHTML = '⚠ ' + v.count + ' champ' + (v.count > 1 ? 's' : '') + ' obligatoire' + (v.count > 1 ? 's' : '') + ' manquant' + (v.count > 1 ? 's' : '') + '<br><span style="font-size:10px;letter-spacing:1px;text-transform:none;opacity:.8">Les champs en rouge doivent être complétés avant l\'envoi</span>';
+      if (v.firstEl) v.firstEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      return;
+    }
+    banner.style.display = 'none';
+
     const prenom1 = val('prenom1') || 'Marié(e) 1';
     const prenom2 = val('prenom2') || 'Marié(e) 2';
 
-    const lines = [
-      `╔══════════════════════════════════════════════════╗`,
-      `  BRIEF DE CRÉATION — SITE DE MARIAGE ETRAH`,
-      `  ${prenom1} & ${prenom2}`,
-      `╚══════════════════════════════════════════════════╝`,
-      ``,
-      `━━━ 01 · LES MARIÉS ━━━`,
-      `Prénom 1       : ${prenom1}`,
-      `Prénom 2       : ${prenom2}`,
-      `Date du mariage: ${formatDate('date-mariage')}`,
-      `Email invités  : ${val('email-invites') || '—'}`,
-      ``,
-      `Notre histoire :`,
-      val('histoire') ? val('histoire') : '—',
-      ``,
-      val('citation') ? `Citation : ${val('citation')}` : '',
-      ``,
-      `━━━ 02 · DESIGN & AMBIANCE ━━━`,
-      `Style          : ${val('styles') || '—'}`,
-      `Ambiance       : ${val('ambiance') || '—'}`,
-      `Couleur 1      : ${val('couleur1-txt') || val('couleur1') || '—'}`,
-      `Couleur 2      : ${val('couleur2-txt') || val('couleur2') || '—'}`,
-      val('couleurs-eviter') ? `Couleurs éviter: ${val('couleurs-eviter')}` : '',
-      val('typo') ? `Typographie    : ${val('typo')}` : '',
-      val('inspirations') ? `\nInspirations :\n${val('inspirations')}` : '',
-      ``,
-      `━━━ 03 · PHOTOS ━━━`,
-      `Photo principale : ${val('photo-principale') || '—'}`,
-      val('photos-galerie') ? `Autres photos :\n${val('photos-galerie')}` : '',
-      `Photographe    : ${val('photographe')}`,
-      ``,
-      `━━━ 04 · LE MARIAGE ━━━`,
-      `Lieu cérémonie : ${val('lieu-ceremonie') || '—'}`,
-      `Adresse        : ${val('adresse-ceremonie') || '—'}`,
-      val('lieu-reception') ? `Lieu réception : ${val('lieu-reception')} — ${val('adresse-reception')}` : '',
-      `Dress code     : ${val('dresscode') || '—'}`,
-      val('hebergements') ? `\nHébergements :\n${val('hebergements')}` : '',
-      val('transport') ? `Transport : ${val('transport')}` : '',
-      val('gmaps') ? `Google Maps : ${val('gmaps')}` : '',
-      ``,
-      `━━━ 05 · PROGRAMME DE LA JOURNÉE ━━━`,
-      getProgramme() || '—',
-      ``,
-      `━━━ 06 · CONTENU DU SITE ━━━`,
-      `Sections       : ${getChecked('sections') || '—'}`,
-      val('sections-custom') ? `Autres sections : ${val('sections-custom')}` : '',
-      ``,
-      val('message-accueil') ? `Message d'accueil :\n${val('message-accueil')}\n` : '',
-      val('liste-mariage') ? `Liste 
+    const sections = [
+      '╔══════════════════════════════════════════════════╗',
+      '  BRIEF DE CRÉATION — SITE DE MARIAGE ETRAH',
+      '  ' + prenom1 + ' & ' + prenom2,
+      '╚══════════════════════════════════════════════════╝',
+      '',
+      '01 - LES MARIES',
+      'Prenom 1       : ' + prenom1,
+      'Prenom 2       : ' + prenom2,
+      'Date du mariage: ' + formatDate('date-mariage'),
+      'Email invites  : ' + (val('email-invites') || '-'),
+      '',
+      'Notre histoire :',
+      val('histoire') || '-',
+      '',
+      val('citation') ? 'Citation : ' + val('citation') : '',
+      '',
+      '02 - DESIGN & AMBIANCE',
+      'Style          : ' + (val('styles') || '-'),
+      'Ambiance       : ' + (val('ambiance') || '-'),
+      'Couleur 1      : ' + (val('couleur1-txt') || val('couleur1') || '-'),
+      'Couleur 2      : ' + (val('couleur2-txt') || val('couleur2') || '-'),
+      val('couleurs-eviter') ? 'Couleurs eviter: ' + val('couleurs-eviter') : '',
+      val('typo') ? 'Typographie    : ' + val('typo') : '',
+      val('inspirations') ? 'Inspirations :\n' + val('inspirations') : '',
+      '',
+      '03 - PHOTOS',
+      'Photo principale : ' + (val('photo-principale') || '-'),
+      val('photos-galerie') ? 'Autres photos :\n' + val('photos-galerie') : '',
+      'Photographe    : ' + (val('photographe') || '-'),
+      '',
+      '04 - LE MARIAGE',
+      'Lieu ceremonie : ' + (val('lieu-ceremonie') || '-'),
+      'Adresse        : ' + (val('adresse-ceremonie') || '-'),
+      val('lieu-reception') ? 'Lieu reception : ' + val('lieu-reception') + ' - ' + val('adresse-reception') : '',
+      'Dress code     : ' + (val('dresscode') || '-'),
+      val('hebergements') ? 'Hebergements :\n' + val('hebergements') : '',
+      val('transport') ? 'Transport : ' + val('transport') : '',
+      val('gmaps') ? 'Google Maps : ' + val('gmaps') : '',
+      '',
+      '05 - PROGRAMME DE LA JOURNEE',
+      getProgramme() || '-',
+      '',
+      '06 - CONTENU DU SITE',
+      'Sections       : ' + (getChecked('sections') || '-'),
+      val('sections-custom') ? 'Autres sections : ' + val('sections-custom') : '',
+      '',
+      val('message-accueil') ? 'Message accueil :\n' + val('message-accueil') : '',
+      val('liste-mariage') ? 'Liste de mariage : ' + val('liste-mariage') : '',
+      val('faq') ? 'FAQ invites :\n' + val('faq') : '',
+      '',
+      '07 - RSVP',
+      'Date limite    : ' + formatDate('rsvp-date'),
+      'Nb invites     : ' + (val('nb-invites') || '-'),
+      val('menus') ? 'Choix menu     : ' + val('menus') : '',
+      'Allergies      : ' + (val('allergies') || '-'),
+      val('rsvp-merci') ? 'Message confirmation : ' + val('rsvp-merci') : '',
+      '',
+      val('remarques') ? '08 - REMARQUES LIBRES\n' + val('remarques') : '',
+      '-------------------------------------------------',
+      'Brief genere via le formulaire Etrah',
+    ];
+
+    const resume = sections.filter(l => l !== '').join('\n');
+
+    const box = document.getElementById('result-box');
+    box.textContent = resume;
+    document.getElementById('resume-hidden').value = resume;
+    document.getElementById('result-zone').style.display = 'block';
+    document.getElementById('result-zone').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    document.getElementById('copy-ok').style.display = 'none';
+    document.getElementById('send-ok').style.display = 'none';
+    document.getElementById('send-err').style.display = 'none';
+    const btnSend = document.getElementById('btn-send');
+    btnSend.disabled = false;
+    btnSend.textContent = 'Envoyer par email à Rayan →';
+  }
+
+  function copyResume() {
+    const text = document.getElementById('result-box').textContent;
+    navigator.clipboard.writeText(text).then(() => {
+      document.getElementById('copy-ok').style.display = 'block';
+    });
+  }
+
+  document.getElementById('brief-form').addEventListener('submit', function(e) {
+    e.preventDefault();
+    const btn = document.getElementById('btn-send');
+    btn.disabled = true;
+    btn.textContent = 'Envoi en cours…';
+
+    const resume = document.getElementById('resume-hidden').value;
+    fetch('https://formspree.io/f/mjgqrbgo', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+      body: JSON.stringify({
+        _subject: 'Brief mariés — ' + (document.getElementById('prenom1').value || '?') + ' & ' + (document.getElementById('prenom2').value || '?'),
+        resume: resume
+      })
+    })
+    .then(() => {
+      btn.textContent = '✓ Envoyé !';
+      document.getElementById('send-ok').style.display = 'block';
+      document.getElementById('send-err').style.display = 'none';
+    })
+    .catch(() => {
+      btn.disabled = false;
+      btn.textContent = 'Envoyer par email à Rayan →';
+      document.getElementById('send-err').style.display = 'block';
+    });
+  });
+</script>
+</body>
+</html>
