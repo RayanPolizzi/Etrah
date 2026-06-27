@@ -1,0 +1,864 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Formulaire de création – Etrah</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Josefin+Sans:wght@300;400&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --gold: #b8922a;
+    --gold2: #d4aa40;
+    --ink: #1a1612;
+    --ink2: #4a3f35;
+    --cream: #f5f0e8;
+    --cream2: #faf7f2;
+    --white: #fdfaf5;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Cormorant Garamond', serif;
+    background: var(--cream2);
+    color: var(--ink);
+    min-height: 100vh;
+  }
+
+  /* ── HEADER ── */
+  .header {
+    background: var(--ink);
+    padding: 36px 40px;
+    text-align: center;
+  }
+  .header-logo {
+    font-family: 'Josefin Sans', sans-serif;
+    font-weight: 300;
+    font-size: 13px;
+    letter-spacing: 6px;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 20px;
+  }
+  .header h1 {
+    font-family: 'Cormorant Garamond', serif;
+    font-weight: 400;
+    font-size: clamp(28px, 4vw, 44px);
+    color: var(--white);
+    line-height: 1.2;
+  }
+  .header h1 em {
+    font-style: italic;
+    color: var(--gold2);
+  }
+  .header-sub {
+    font-family: 'Josefin Sans', sans-serif;
+    font-weight: 300;
+    font-size: 11px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: rgba(253,250,245,.5);
+    margin-top: 14px;
+  }
+  .header-orn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    margin: 20px auto 0;
+  }
+  .header-orn span { width: 40px; height: 1px; background: var(--gold); opacity: .5; display: block; }
+  .header-orn i { width: 5px; height: 5px; background: var(--gold); transform: rotate(45deg); display: block; }
+
+  /* ── INTRO ── */
+  .intro {
+    max-width: 700px;
+    margin: 50px auto 0;
+    padding: 0 24px;
+    text-align: center;
+  }
+  .intro p {
+    font-size: 18px;
+    font-style: italic;
+    color: var(--ink);
+    line-height: 1.8;
+  }
+  .intro p strong { font-style: normal; color: var(--gold); }
+
+  /* ── FORM ── */
+  .form-wrap {
+    max-width: 760px;
+    margin: 50px auto 80px;
+    padding: 0 24px;
+  }
+
+  /* ── SECTION ── */
+  .section {
+    background: var(--white);
+    border: 1px solid rgba(184,146,42,.15);
+    margin-bottom: 32px;
+    overflow: hidden;
+  }
+  .section-header {
+    background: var(--ink);
+    padding: 20px 32px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+  .section-num {
+    font-family: 'Josefin Sans', sans-serif;
+    font-weight: 300;
+    font-size: 10px;
+    letter-spacing: 3px;
+    color: var(--gold);
+    min-width: 24px;
+  }
+  .section-title {
+    font-family: 'Josefin Sans', sans-serif;
+    font-weight: 300;
+    font-size: 11px;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    color: var(--white);
+  }
+  .section-body { padding: 32px; }
+
+  /* ── FIELD ── */
+  .field { margin-bottom: 28px; }
+  .field:last-child { margin-bottom: 0; }
+  .field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+  .field-row-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; }
+
+  label {
+    display: block;
+    font-family: 'Josefin Sans', sans-serif;
+    font-weight: 400;
+    font-size: 11px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--ink);
+    margin-bottom: 8px;
+  }
+  label .opt {
+    color: var(--ink2);
+    font-size: 10px;
+    letter-spacing: 0px;
+    text-transform: none;
+    font-weight: 300;
+    margin-left: 4px;
+  }
+
+  input[type="text"],
+  input[type="email"],
+  input[type="date"],
+  input[type="time"],
+  input[type="color"],
+  textarea,
+  select {
+    width: 100%;
+    background: #fff;
+    border: 1.5px solid rgba(26,22,18,.25);
+    padding: 13px 16px;
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 17px;
+    color: var(--ink);
+    outline: none;
+    transition: border-color .25s;
+    -webkit-appearance: none;
+  }
+  input[type="text"]:focus,
+  input[type="email"]:focus,
+  input[type="date"]:focus,
+  input[type="time"]:focus,
+  textarea:focus,
+  select:focus {
+    border-color: var(--gold);
+    background: var(--white);
+  }
+  input::placeholder, textarea::placeholder { color: #9e9089; }
+  textarea { resize: vertical; min-height: 90px; line-height: 1.6; }
+  select { cursor: pointer; color: var(--ink); }
+
+  input[type="color"] {
+    padding: 6px;
+    height: 44px;
+    cursor: pointer;
+  }
+
+  .color-field { display: flex; align-items: center; gap: 10px; }
+  .color-field input[type="color"] { width: 48px; flex-shrink: 0; }
+  .color-field input[type="text"] { flex: 1; }
+
+  /* Checkboxes style */
+  .check-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+    gap: 10px;
+  }
+  .check-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    cursor: pointer;
+    padding: 10px 14px;
+    border: 1px solid rgba(184,146,42,.15);
+    transition: border-color .2s, background .2s;
+    background: var(--cream2);
+  }
+  .check-item:hover { border-color: var(--gold); }
+  .check-item input[type="checkbox"] { display: none; }
+  .check-item.checked {
+    border-color: var(--gold);
+    background: var(--white);
+  }
+  .check-box {
+    width: 14px;
+    height: 14px;
+    border: 1px solid rgba(184,146,42,.4);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    transition: background .2s, border-color .2s;
+  }
+  .check-item.checked .check-box {
+    background: var(--gold);
+    border-color: var(--gold);
+  }
+  .check-box::after {
+    content: '';
+    display: none;
+    width: 8px;
+    height: 5px;
+    border-left: 1.5px solid #fff;
+    border-bottom: 1.5px solid #fff;
+    transform: rotate(-45deg) translateY(-1px);
+  }
+  .check-item.checked .check-box::after { display: block; }
+  .check-label {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 16px;
+    font-weight: 500;
+    color: var(--ink);
+    line-height: 1.2;
+  }
+
+  /* Programme table */
+  .prog-table { width: 100%; border-collapse: collapse; }
+  .prog-table th {
+    font-family: 'Josefin Sans', sans-serif;
+    font-weight: 400;
+    font-size: 10px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--ink2);
+    text-align: left;
+    padding: 8px 10px;
+    border-bottom: 1.5px solid rgba(26,22,18,.15);
+  }
+  .prog-row td { padding: 6px 4px; }
+  .prog-row input {
+    width: 100%;
+    background: #fff;
+    border: 1.5px solid rgba(26,22,18,.2);
+    padding: 9px 12px;
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 16px;
+    color: var(--ink);
+    outline: none;
+  }
+  .prog-row input:focus {
+    border-color: var(--gold);
+    background: var(--white);
+  }
+  .add-row-btn {
+    font-family: 'Josefin Sans', sans-serif;
+    font-weight: 300;
+    font-size: 9px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--gold);
+    background: none;
+    border: 1px solid rgba(184,146,42,.3);
+    padding: 9px 20px;
+    cursor: pointer;
+    margin-top: 12px;
+    transition: border-color .2s, background .2s;
+    display: block;
+    width: 100%;
+  }
+  .add-row-btn:hover { border-color: var(--gold); background: var(--cream2); }
+
+  /* ── SUBMIT ZONE ── */
+  .submit-zone {
+    background: var(--white);
+    border: 1px solid rgba(184,146,42,.15);
+    padding: 40px 32px;
+    text-align: center;
+  }
+  .submit-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 26px;
+    font-weight: 400;
+    color: var(--ink);
+    margin-bottom: 8px;
+  }
+  .submit-title em { font-style: italic; color: var(--gold); }
+  .submit-sub {
+    font-family: 'Josefin Sans', sans-serif;
+    font-weight: 300;
+    font-size: 10px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--ink2);
+    opacity: .6;
+    margin-bottom: 28px;
+  }
+  .btn-generate {
+    font-family: 'Josefin Sans', sans-serif;
+    font-weight: 400;
+    font-size: 10px;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    color: var(--white);
+    background: var(--ink);
+    border: none;
+    padding: 18px 48px;
+    cursor: pointer;
+    transition: background .3s;
+  }
+  .btn-generate:hover { background: var(--gold); }
+
+  /* ── RESULT ── */
+  .result-zone {
+    display: none;
+    margin-top: 28px;
+    text-align: left;
+  }
+  .result-label {
+    font-family: 'Josefin Sans', sans-serif;
+    font-weight: 300;
+    font-size: 9px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 10px;
+  }
+  .result-box {
+    background: var(--cream2);
+    border: 1px solid rgba(184,146,42,.2);
+    padding: 24px;
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 15px;
+    color: var(--ink);
+    line-height: 1.8;
+    white-space: pre-wrap;
+    max-height: 400px;
+    overflow-y: auto;
+    word-break: break-word;
+  }
+  .btn-copy {
+    font-family: 'Josefin Sans', sans-serif;
+    font-weight: 400;
+    font-size: 9px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--white);
+    background: var(--gold);
+    border: none;
+    padding: 13px 32px;
+    cursor: pointer;
+    margin-top: 14px;
+    transition: background .3s;
+  }
+  .btn-copy:hover { background: var(--ink); }
+
+  .btn-send {
+    font-family: 'Josefin Sans', sans-serif;
+    font-weight: 400;
+    font-size: 11px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    background: var(--gold);
+    color: #fff;
+    border: none;
+    padding: 16px 36px;
+    cursor: pointer;
+    transition: background .3s;
+  }
+  .btn-send:hover { background: var(--gold2); }
+  .btn-send:disabled { opacity: .5; cursor: default; }
+  .copy-ok {
+    display: none;
+    font-family: 'Josefin Sans', sans-serif;
+    font-size: 9px;
+    letter-spacing: 2px;
+    color: var(--gold);
+    margin-top: 10px;
+    text-transform: uppercase;
+  }
+
+  /* ── FOOTER ── */
+  .footer {
+    background: var(--ink);
+    padding: 24px;
+    text-align: center;
+  }
+  .footer p {
+    font-family: 'Josefin Sans', sans-serif;
+    font-weight: 300;
+    font-size: 9px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: rgba(253,250,245,.3);
+  }
+
+  @media(max-width: 600px) {
+    .field-row, .field-row-3 { grid-template-columns: 1fr; }
+    .section-body { padding: 20px; }
+    .header { padding: 28px 20px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header class="header">
+  <p class="header-logo">Etrah</p>
+  <h1>Votre site de mariage<br><em>sur-mesure commence ici</em></h1>
+  <p class="header-sub">Formulaire de création · À remplir après votre appel</p>
+  <div class="header-orn"><span></span><i></i><span></span></div>
+</header>
+
+<!-- INTRO -->
+<div class="intro">
+  <p>Prenez le temps de remplir ce formulaire avec soin — plus vos réponses sont précises, plus votre site sera <strong>fidèle à votre vision</strong>. Aucune bonne ou mauvaise réponse : c'est votre histoire qui guide tout.</p>
+</div>
+
+<!-- FORM -->
+<div class="form-wrap">
+
+  <!-- 1. LES MARIÉS -->
+  <div class="section">
+    <div class="section-header">
+      <span class="section-num">01</span>
+      <span class="section-title">Les mariés</span>
+    </div>
+    <div class="section-body">
+      <div class="field field-row">
+        <div>
+          <label>Prénom du/de la marié(e) 1</label>
+          <input type="text" id="prenom1" placeholder="ex. Camille">
+        </div>
+        <div>
+          <label>Prénom du/de la marié(e) 2</label>
+          <input type="text" id="prenom2" placeholder="ex. Thomas">
+        </div>
+      </div>
+      <div class="field field-row">
+        <div>
+          <label>Date du mariage</label>
+          <input type="date" id="date-mariage">
+        </div>
+        <div>
+          <label>Email de contact pour les invités</label>
+          <input type="email" id="email-invites" placeholder="ex. camille.thomas2026@gmail.com">
+        </div>
+      </div>
+      <div class="field">
+        <label>Notre histoire <span class="opt">(comment vous êtes-vous rencontrés ? quelques lignes)</span></label>
+        <textarea id="histoire" rows="4" placeholder="Nous nous sommes rencontrés en…"></textarea>
+      </div>
+      <div class="field">
+        <label>Citation ou phrase qui vous ressemble <span class="opt">(optionnel)</span></label>
+        <input type="text" id="citation" placeholder="ex. « L'amour est la seule folie raisonnable »">
+      </div>
+    </div>
+  </div>
+
+  <!-- 2. DESIGN & AMBIANCE -->
+  <div class="section">
+    <div class="section-header">
+      <span class="section-num">02</span>
+      <span class="section-title">Design & ambiance</span>
+    </div>
+    <div class="section-body">
+      <div class="field">
+        <label>Style de votre mariage</label>
+        <input type="text" id="styles" placeholder="ex. Romantique et champêtre, tons beige et terracotta, fleurs séchées…">
+      </div>
+      <div class="field">
+        <label>Ambiance générale / mots qui vous décrivent</label>
+        <input type="text" id="ambiance" placeholder="ex. Élégant mais chaleureux, lumière dorée, fleurs sauvages…">
+      </div>
+      <div class="field">
+        <label>Couleur principale du mariage</label>
+        <div class="color-field">
+          <input type="color" id="couleur1" value="#b8922a">
+          <input type="text" id="couleur1-txt" placeholder="Nom ou code hex ex. #b8922a — Or champagne">
+        </div>
+      </div>
+      <div class="field">
+        <label>Couleur secondaire <span class="opt">(optionnel)</span></label>
+        <div class="color-field">
+          <input type="color" id="couleur2" value="#f5f0e8">
+          <input type="text" id="couleur2-txt" placeholder="ex. #1a1612 — Noir encre">
+        </div>
+      </div>
+      <div class="field">
+        <label>Couleurs à éviter absolument <span class="opt">(optionnel)</span></label>
+        <input type="text" id="couleurs-eviter" placeholder="ex. Rouge, orange vif, violet">
+      </div>
+      <div class="field">
+        <label>Inspirations <span class="opt">(liens Pinterest, Instagram, images…)</span></label>
+        <textarea id="inspirations" rows="3" placeholder="https://pinterest.com/... · Des tons crème et terracotta, comme le Maroc…"></textarea>
+      </div>
+      <div class="field">
+        <label>Préférence typographique <span class="opt">(optionnel)</span></label>
+        <select id="typo">
+          <option value="">— Pas de préférence, faites votre choix —</option>
+          <option value="Serif élégant (Cormorant, Playfair…)">Serif élégant — lettres avec empattements (Cormorant, Playfair…)</option>
+          <option value="Script manuscrit (Great Vibes, Parisienne…)">Script / manuscrit (Great Vibes, Parisienne…)</option>
+          <option value="Sans-serif moderne (Josefin, Montserrat…)">Sans-serif moderne et épuré (Josefin, Montserrat…)</option>
+          <option value="Mélange serif + sans-serif">Mélange serif élégant + sans-serif</option>
+        </select>
+      </div>
+    </div>
+  </div>
+
+  <!-- 3. PHOTOS -->
+  <div class="section">
+    <div class="section-header">
+      <span class="section-num">03</span>
+      <span class="section-title">Photos</span>
+    </div>
+    <div class="section-body">
+      <div class="field">
+        <label>Photo principale du couple <span class="opt">(lien URL ou description de la photo à envoyer)</span></label>
+        <input type="text" id="photo-principale" placeholder="https://... ou « Je vous l'envoie par email »">
+      </div>
+      <div class="field">
+        <label>Autres photos à inclure <span class="opt">(galerie, lieux, etc.)</span></label>
+        <textarea id="photos-galerie" rows="3" placeholder="Photo de la salle · Photo du lieu de cérémonie · Photos du couple · Photos de famille…"></textarea>
+      </div>
+      <div class="field">
+        <label>Avez-vous un photographe professionnel ? <span class="opt">(ses photos pourront être ajoutées après le mariage)</span></label>
+        <select id="photographe">
+          <option value="Oui">Oui</option>
+          <option value="Non">Non</option>
+          <option value="En cours de recherche">En cours de recherche</option>
+        </select>
+      </div>
+    </div>
+  </div>
+
+  <!-- 4. LE MARIAGE -->
+  <div class="section">
+    <div class="section-header">
+      <span class="section-num">04</span>
+      <span class="section-title">Le mariage</span>
+    </div>
+    <div class="section-body">
+      <div class="field field-row">
+        <div>
+          <label>Lieu de la cérémonie</label>
+          <input type="text" id="lieu-ceremonie" placeholder="Nom du lieu">
+        </div>
+        <div>
+          <label>Adresse de la cérémonie</label>
+          <input type="text" id="adresse-ceremonie" placeholder="12 rue du Château, 06000 Nice">
+        </div>
+      </div>
+      <div class="field">
+        <label>Lieu de réception <span class="opt">(si différent)</span></label>
+        <div class="field-row">
+          <input type="text" id="lieu-reception" placeholder="Nom du lieu">
+          <input type="text" id="adresse-reception" placeholder="Adresse complète">
+        </div>
+      </div>
+      <div class="field">
+        <label>Dress code</label>
+        <input type="text" id="dresscode" placeholder="ex. Tenue de soirée, couleurs claires bienvenues">
+      </div>
+      <div class="field">
+        <label>Hébergements recommandés <span class="opt">(hôtels, Airbnb, camping… avec noms ou liens)</span></label>
+        <textarea id="hebergements" rows="3" placeholder="Hôtel Le Negresco, Nice · Airbnb à partir de 80€/nuit…"></textarea>
+      </div>
+      <div class="field">
+        <label>Transport / navettes <span class="opt">(optionnel)</span></label>
+        <input type="text" id="transport" placeholder="ex. Navette depuis la gare à 15h30 · Parking gratuit sur place">
+      </div>
+      <div class="field">
+        <label>Lien Google Maps du lieu principal <span class="opt">(optionnel)</span></label>
+        <input type="text" id="gmaps" placeholder="https://maps.google.com/...">
+      </div>
+    </div>
+  </div>
+
+  <!-- 5. PROGRAMME DE LA JOURNÉE -->
+  <div class="section">
+    <div class="section-header">
+      <span class="section-num">05</span>
+      <span class="section-title">Programme de la journée</span>
+    </div>
+    <div class="section-body">
+      <p style="font-style:italic;color:var(--ink);font-size:16px;margin-bottom:20px;line-height:1.7">Renseignez les grandes étapes de votre journée, dans l'ordre. Ce programme sera affiché heure par heure sur votre site.</p>
+      <table class="prog-table" id="prog-table">
+        <thead>
+          <tr>
+            <th style="width:100px">Heure</th>
+            <th>Étape</th>
+            <th style="width:180px">Lieu <span style="font-weight:300;opacity:.5">(optionnel)</span></th>
+          </tr>
+        </thead>
+        <tbody id="prog-body">
+          <tr class="prog-row"><td><input type="time" value="14:00"></td><td><input type="text" placeholder="Cérémonie civile / religieuse"></td><td><input type="text" placeholder="Mairie de Nice"></td></tr>
+          <tr class="prog-row"><td><input type="time" value="15:30"></td><td><input type="text" placeholder="Vin d'honneur"></td><td><input type="text" placeholder="Jardins du Château"></td></tr>
+          <tr class="prog-row"><td><input type="time" value="19:00"></td><td><input type="text" placeholder="Dîner de gala"></td><td><input type="text" placeholder="Salle des fêtes"></td></tr>
+          <tr class="prog-row"><td><input type="time" value="23:00"></td><td><input type="text" placeholder="Soirée dansante"></td><td><input type="text" placeholder=""></td></tr>
+          <tr class="prog-row"><td><input type="time" value=""></td><td><input type="text" placeholder=""></td><td><input type="text" placeholder=""></td></tr>
+        </tbody>
+      </table>
+      <button class="add-row-btn" onclick="addRow()">+ Ajouter une étape</button>
+    </div>
+  </div>
+
+  <!-- 6. CONTENU DU SITE -->
+  <div class="section">
+    <div class="section-header">
+      <span class="section-num">06</span>
+      <span class="section-title">Contenu du site</span>
+    </div>
+    <div class="section-body">
+      <div class="field">
+        <label>Sections à inclure <span class="opt">(cochez ce que vous voulez sur votre site)</span></label>
+        <div class="check-grid" id="sections">
+          <label class="check-item" onclick="return toggleCheck(this)"><input type="checkbox"><span class="check-box"></span><span class="check-label">Notre histoire</span></label>
+          <label class="check-item" onclick="return toggleCheck(this)"><input type="checkbox"><span class="check-box"></span><span class="check-label">Programme</span></label>
+          <label class="check-item" onclick="return toggleCheck(this)"><input type="checkbox"><span class="check-box"></span><span class="check-label">RSVP</span></label>
+          <label class="check-item" onclick="return toggleCheck(this)"><input type="checkbox"><span class="check-box"></span><span class="check-label">Infos pratiques</span></label>
+          <label class="check-item" onclick="return toggleCheck(this)"><input type="checkbox"><span class="check-box"></span><span class="check-label">Compte à rebours</span></label>
+          <label class="check-item" onclick="return toggleCheck(this)"><input type="checkbox"><span class="check-box"></span><span class="check-label">Galerie photos</span></label>
+          <label class="check-item" onclick="return toggleCheck(this)"><input type="checkbox"><span class="check-box"></span><span class="check-label">Menu / repas</span></label>
+          <label class="check-item" onclick="return toggleCheck(this)"><input type="checkbox"><span class="check-box"></span><span class="check-label">Liste de mariage</span></label>
+          <label class="check-item" onclick="return toggleCheck(this)"><input type="checkbox"><span class="check-box"></span><span class="check-label">FAQ invités</span></label>
+          <label class="check-item" onclick="return toggleCheck(this)"><input type="checkbox"><span class="check-box"></span><span class="check-label">Hébergements</span></label>
+        </div>
+      </div>
+      <div class="field">
+        <label>Autres sections ou idées spécifiques <span class="opt">(optionnel)</span></label>
+        <textarea id="sections-custom" rows="3" placeholder="ex. Une page dédiée au voyage de noces · Un espace pour partager les photos après la cérémonie · Une section pour les enfants invités…"></textarea>
+      </div>
+      <div class="field">
+        <label>Message d'accueil pour les invités</label>
+        <textarea id="message-accueil" rows="3" placeholder="ex. Nous sommes tellement heureux de vous avoir à nos côtés pour ce jour si particulier…"></textarea>
+      </div>
+      <div class="field">
+        <label>Liste de mariage — lien ou informations <span class="opt">(optionnel)</span></label>
+        <input type="text" id="liste-mariage" placeholder="ex. Liste sur Mariage.net : https://... · Participations voyage de noces bienvenues">
+      </div>
+      <div class="field">
+        <label>FAQ invités — questions fréquentes et réponses <span class="opt">(optionnel)</span></label>
+        <textarea id="faq" rows="4" placeholder="Puis-je venir avec mes enfants ? · Où me garer ? · Y a-t-il une navette ?…"></textarea>
+      </div>
+    </div>
+  </div>
+
+  <!-- 7. RSVP -->
+  <div class="section">
+    <div class="section-header">
+      <span class="section-num">07</span>
+      <span class="section-title">RSVP</span>
+    </div>
+    <div class="section-body">
+      <div class="field field-row">
+        <div>
+          <label>Date limite de réponse</label>
+          <input type="date" id="rsvp-date">
+        </div>
+        <div>
+          <label>Nombre d'invités estimé</label>
+          <input type="text" id="nb-invites" placeholder="ex. 120">
+        </div>
+      </div>
+      <div class="field">
+        <label>Choix de menu à proposer <span class="opt">(optionnel — ex : viande / poisson / végétarien)</span></label>
+        <input type="text" id="menus" placeholder="ex. Bœuf en croûte · Saumon Wellington · Option végé">
+      </div>
+      <div class="field">
+        <label>Demander les allergies/régimes ?</label>
+        <select id="allergies">
+          <option value="oui">Oui — afficher un champ pour les allergies</option>
+          <option value="non">Non</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>Message de remerciement après confirmation <span class="opt">(optionnel)</span></label>
+        <input type="text" id="rsvp-merci" placeholder="ex. Merci ! On a hâte de vous retrouver 🥂">
+      </div>
+    </div>
+  </div>
+
+  <!-- 8. REMARQUES -->
+  <div class="section">
+    <div class="section-header">
+      <span class="section-num">08</span>
+      <span class="section-title">Remarques libres</span>
+    </div>
+    <div class="section-body">
+      <div class="field">
+        <label>Tout ce que vous souhaitez ajouter, préciser ou demander</label>
+        <textarea id="remarques" rows="5" placeholder="Anecdotes, contraintes, idées folles, sites que vous adorez, ce que vous ne voulez surtout pas…"></textarea>
+      </div>
+    </div>
+  </div>
+
+  <!-- GÉNÉRATION DU RÉSUMÉ -->
+  <div class="submit-zone">
+    <h2 class="submit-title">Prêt(e)s à <em>envoyer</em> ?</h2>
+    <p class="submit-sub">Générez votre résumé · Envoyez-le directement à Rayan par email</p>
+    <button class="btn-generate" onclick="generateResume()">Générer mon résumé →</button>
+
+    <div class="result-zone" id="result-zone">
+      <p class="result-label">Votre résumé — vérifiez avant d'envoyer</p>
+      <div class="result-box" id="result-box"></div>
+
+      <form name="brief-maries" method="POST" data-netlify="true" id="brief-form" style="margin-top:24px">
+        <input type="hidden" name="form-name" value="brief-maries">
+        <textarea name="resume" id="resume-hidden" style="display:none"></textarea>
+        <div style="display:flex;gap:12px;flex-wrap:wrap;justify-content:center">
+          <button type="button" class="btn-copy" onclick="copyResume()">Copier le résumé</button>
+          <button type="submit" class="btn-send" id="btn-send">Envoyer par email à Rayan →</button>
+        </div>
+        <p class="copy-ok" id="copy-ok" style="margin-top:12px">✓ Copié dans le presse-papiers</p>
+        <p class="send-ok" id="send-ok" style="display:none;margin-top:12px;color:#2a7a2a;font-family:'Josefin Sans',sans-serif;font-size:12px;letter-spacing:2px;text-align:center">✓ Brief envoyé à Rayan — il revient vers vous rapidement !</p>
+        <p class="send-err" id="send-err" style="display:none;margin-top:12px;color:#c0392b;font-family:'Josefin Sans',sans-serif;font-size:12px;letter-spacing:1px;text-align:center">Erreur d'envoi — copiez le résumé et envoyez-le manuellement.</p>
+      </form>
+    </div>
+  </div>
+
+</div>
+
+<!-- FOOTER -->
+<footer class="footer">
+  <p>Etrah · Agence de création de sites de mariage sur-mesure · Nice, France</p>
+</footer>
+
+<script>
+  // ── Checkbox toggle ──────────────────────────────────────────
+  function toggleCheck(el) {
+    el.classList.toggle('checked');
+    const cb = el.querySelector('input[type="checkbox"]');
+    cb.checked = el.classList.contains('checked');
+    return false; // empêche le double-toggle natif du label
+  }
+
+  // ── Programme : ajouter une ligne ────────────────────────────
+  function addRow() {
+    const tbody = document.getElementById('prog-body');
+    const tr = document.createElement('tr');
+    tr.className = 'prog-row';
+    tr.innerHTML = `<td><input type="time" value=""></td><td><input type="text" placeholder=""></td><td><input type="text" placeholder=""></td>`;
+    tbody.appendChild(tr);
+  }
+
+  // ── Sync color picker → text field ───────────────────────────
+  document.getElementById('couleur1').addEventListener('input', function() {
+    const txt = document.getElementById('couleur1-txt');
+    if (!txt.value || txt.value.startsWith('#')) txt.value = this.value;
+  });
+  document.getElementById('couleur2').addEventListener('input', function() {
+    const txt = document.getElementById('couleur2-txt');
+    if (!txt.value || txt.value.startsWith('#')) txt.value = this.value;
+  });
+
+  // ── GÉNÉRATION DU RÉSUMÉ ─────────────────────────────────────
+  function val(id) {
+    const el = document.getElementById(id);
+    return el ? (el.value || '').trim() : '';
+  }
+
+  function getChecked(containerId) {
+    const items = document.querySelectorAll(`#${containerId} .check-item.checked .check-label`);
+    return Array.from(items).map(i => i.textContent.trim()).join(', ');
+  }
+
+  function getProgramme() {
+    const rows = document.querySelectorAll('#prog-body .prog-row');
+    let lines = [];
+    rows.forEach(row => {
+      const inputs = row.querySelectorAll('input');
+      const heure = inputs[0].value;
+      const etape = inputs[1].value.trim();
+      const lieu  = inputs[2].value.trim();
+      if (etape) {
+        let line = `  ${heure || '??:??'} — ${etape}`;
+        if (lieu) line += ` (${lieu})`;
+        lines.push(line);
+      }
+    });
+    return lines.join('\n');
+  }
+
+  function formatDate(id) {
+    const v = val(id);
+    if (!v) return '—';
+    const d = new Date(v);
+    return d.toLocaleDateString('fr-FR', { weekday:'long', day:'numeric', month:'long', year:'numeric' });
+  }
+
+  function generateResume() {
+    const prenom1 = val('prenom1') || 'Marié(e) 1';
+    const prenom2 = val('prenom2') || 'Marié(e) 2';
+
+    const lines = [
+      `╔══════════════════════════════════════════════════╗`,
+      `  BRIEF DE CRÉATION — SITE DE MARIAGE ETRAH`,
+      `  ${prenom1} & ${prenom2}`,
+      `╚══════════════════════════════════════════════════╝`,
+      ``,
+      `━━━ 01 · LES MARIÉS ━━━`,
+      `Prénom 1       : ${prenom1}`,
+      `Prénom 2       : ${prenom2}`,
+      `Date du mariage: ${formatDate('date-mariage')}`,
+      `Email invités  : ${val('email-invites') || '—'}`,
+      ``,
+      `Notre histoire :`,
+      val('histoire') ? val('histoire') : '—',
+      ``,
+      val('citation') ? `Citation : ${val('citation')}` : '',
+      ``,
+      `━━━ 02 · DESIGN & AMBIANCE ━━━`,
+      `Style          : ${val('styles') || '—'}`,
+      `Ambiance       : ${val('ambiance') || '—'}`,
+      `Couleur 1      : ${val('couleur1-txt') || val('couleur1') || '—'}`,
+      `Couleur 2      : ${val('couleur2-txt') || val('couleur2') || '—'}`,
+      val('couleurs-eviter') ? `Couleurs éviter: ${val('couleurs-eviter')}` : '',
+      val('typo') ? `Typographie    : ${val('typo')}` : '',
+      val('inspirations') ? `\nInspirations :\n${val('inspirations')}` : '',
+      ``,
+      `━━━ 03 · PHOTOS ━━━`,
+      `Photo principale : ${val('photo-principale') || '—'}`,
+      val('photos-galerie') ? `Autres photos :\n${val('photos-galerie')}` : '',
+      `Photographe    : ${val('photographe')}`,
+      ``,
+      `━━━ 04 · LE MARIAGE ━━━`,
+      `Lieu cérémonie : ${val('lieu-ceremonie') || '—'}`,
+      `Adresse        : ${val('adresse-ceremonie') || '—'}`,
+      val('lieu-reception') ? `Lieu réception : ${val('lieu-reception')} — ${val('adresse-reception')}` : '',
+      `Dress code     : ${val('dresscode') || '—'}`,
+      val('hebergements') ? `\nHébergements :\n${val('hebergements')}` : '',
+      val('transport') ? `Transport : ${val('transport')}` : '',
+      val('gmaps') ? `Google Maps : ${val('gmaps')}` : '',
+      ``,
+      `━━━ 05 · PROGRAMME DE LA JOURNÉE ━━━`,
+      getProgramme() || '—',
+      ``,
+      `━━━ 06 · CONTENU DU SITE ━━━`,
+      `Sections       : ${getChecked('sections') || '—'}`,
+      val('sections-custom') ? `Autres sections : ${val('sections-custom')}` : '',
+      ``,
+      val('message-accueil') ? `Message d'accueil :\n${val('message-accueil')}\n` : '',
+      val('liste-mariage') ? `Liste 
