@@ -13,7 +13,7 @@ from pathlib import Path
 
 # ── CONFIG ────────────────────────────────────────────────────────────────────
 BASE_DIR  = Path(__file__).parent
-SITE_URL  = "https://www.site-mariage.com"
+SITE_URL  = "https://site-mariage.com"
 TODAY     = datetime.now().strftime("%Y-%m-%d")
 MONTH_FR  = {
     "01":"Janvier","02":"Février","03":"Mars","04":"Avril",
@@ -327,7 +327,7 @@ def build_html(title, data, slug, hero_url, date_fr, date_iso):
         read_time   = html.escape(data.get("read_time", "5 min de lecture")),
         intro       = html.escape(data.get("intro", "")),
         body        = body,
-        page_url    = f"{SITE_URL}/{slug}.html",
+        page_url    = f"{SITE_URL}/{slug}",
         site_url    = SITE_URL,
     )
 
@@ -336,7 +336,7 @@ def update_sitemap(slug, date_iso):
     p = BASE_DIR / "sitemap.xml"
     c = p.read_text(encoding="utf-8")
     entry = f"""  <url>
-    <loc>{SITE_URL}/{slug}.html</loc>
+    <loc>{SITE_URL}/{slug}</loc>
     <lastmod>{date_iso}</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
