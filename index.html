@@ -366,6 +366,9 @@ nav.scrolled{background:rgba(245,240,232,.95);backdrop-filter:blur(20px);padding
 .hero-title{font-family:'Cormorant Garamond',serif;font-style:italic;font-weight:300;font-size:clamp(44px,7vw,86px);color:var(--ink);line-height:1.06;margin-bottom:24px;opacity:0;animation:fadeUp .9s ease .5s forwards;text-align:center;width:100%}
 .hero-title em{font-style:normal;font-weight:600;background:linear-gradient(135deg,var(--gold) 0%,var(--gold2) 50%,var(--gold) 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
 .hero-rule{width:40px;height:1px;background:linear-gradient(to right,transparent,var(--gold),transparent);margin:0 auto 28px;opacity:0;animation:fadeUp .8s ease .7s forwards}
+.typed-cursor{color:var(--gold);font-style:normal;font-weight:300;animation:cursorBlink .7s step-end infinite;margin-left:1px;-webkit-text-fill-color:var(--gold)}
+@keyframes cursorBlink{0%,100%{opacity:1}50%{opacity:0}}
+.typed-cursor.done{display:none}
 .hero-sub{font-family:'Cormorant Garamond',serif;font-style:italic;font-weight:300;font-size:clamp(15px,1.8vw,18px);color:var(--ink3);line-height:1.85;max-width:560px;margin:0 auto 44px;opacity:0;animation:fadeUp .8s ease .85s forwards}
 .hero-actions{display:flex;align-items:center;justify-content:center;gap:16px;flex-wrap:wrap;opacity:0;animation:fadeUp .8s ease 1s forwards}
 .btn-primary{
@@ -1239,7 +1242,7 @@ img,svg{max-width:100%;height:auto;image-rendering:-webkit-optimize-contrast}
   <div class="hero-content">
     <div class="hero-badge"><span class="hero-badge-dot"></span>5 places restantes pour ce mois-ci</div>
     <p class="hero-eyebrow">Sites de mariage · Conçus sur-mesure · Made in France</p>
-    <h1 class="hero-title"><span style="white-space:nowrap;display:block;text-align:center">Votre <em>site de mariage</em>,</span><span style="display:block;text-align:center">unique et inoubliable</span></h1>
+    <h1 class="hero-title"><span style="white-space:nowrap;display:block;text-align:center">Votre <em id="typed-em">site de mariage</em><span class="typed-cursor" id="typed-cursor">|</span>,</span><span style="display:block;text-align:center">unique et inoubliable</span></h1>
     <div class="hero-rule"></div>
     <p class="hero-sub">Nous concevons votre site de mariage sur-mesure, de A à Z. Design unique, RSVP, enveloppe animée et compte à rebours — une invitation digitale à partager à vos invités quelques mois avant la cérémonie.</p>
     <div class="hero-actions">
@@ -1923,10 +1926,44 @@ if(form){
     }
   });
 }
+/* ── Typewriter hero ── */
+(function(){
+  var el = document.getElementById('typed-em');
+  var cur = document.getElementById('typed-cursor');
+  if(!el||!cur) return;
+  var full = el.textContent;
+  el.textContent = '';
+  var TYPE_SPEED = 68;
+  var ERASE_SPEED = 38;
+  var PAUSE = 4000;
+
+  function type(cb){
+    var i = 0;
+    function t(){ if(i<full.length){ el.textContent+=full[i++]; setTimeout(t,TYPE_SPEED); } else cb(); }
+    t();
+  }
+  function erase(cb){
+    function e(){ if(el.textContent.length>0){ el.textContent=el.textContent.slice(0,-1); setTimeout(e,ERASE_SPEED); } else cb(); }
+    e();
+  }
+  function loop(){
+    type(function(){
+      setTimeout(function(){
+        erase(function(){
+          setTimeout(loop, 300);
+        });
+      }, PAUSE);
+    });
+  }
+
+  setTimeout(function(){
+    cur.style.visibility = '';
+    loop();
+  }, 1400);
+})();
 </script>
 
 <!-- GEO: bloc factuel pour crawlers IA (ChatGPT, Perplexity, Claude) -->
 <div style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap" aria-hidden="true">
   <p>Etrah est une agence francaise specialisee dans la creation de sites de mariage sur-mesure. Fondee par Rayan Polizzi, basee a Nice, France. Service 100% a distance, partout en France.</p>
-  <p>Prix : 500 euros TTC, paiement unique, sans abonnement. Delai : 10 a 14 jours. Inclus : design unique, RSVP, compte a rebours, enveloppe animee, galerie photos, hebergement 18 mois.</p>
-  <p>Contact :
+  <p>Prix 
