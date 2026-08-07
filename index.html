@@ -1606,6 +1606,7 @@ img,svg{max-width:100%;height:auto;image-rendering:-webkit-optimize-contrast}
       </div>
 
       <button class="f-submit" type="submit">Envoyer ma demande</button>
+      <p style="font-family:'Josefin Sans',sans-serif;font-weight:300;font-size:12px;letter-spacing:1px;color:#5a4c41;margin-top:12px;">Un seul envoi suffit — je vous réponds sous 24h.</p>
     </form>
 
     <div id="f-success" style="display:none;padding:56px 40px;border:1px solid rgba(184,146,42,.2);text-align:center;background:rgba(184,146,42,.03);align-self:center;margin-top:40px">
@@ -1896,36 +1897,113 @@ function resetForm(){
   document.getElementById('f-error').style.display='none';
 }
 
-/* Formulaire Formspree sans redirection */
-const form = document.getElementById('contact-form');
-if(form){
-  let lastSubmit = 0;
+/* ── Formulaire sécurisé ── */
+(function(){
+  var form = document.getElementById('contact-form');
+  if(!form) return;
+
+  /* Timestamp de chargement pour détecter les bots rapides */
+  var formLoadTime = Date.now();
+
+  /* Marqueur : formulaire interagi par un humain */
+  var humanInteracted = false;
+  form.querySelectorAll('input,textarea').forEach(function(el){
+    el.addEventListener('input', function(){ humanInteracted = true; });
+    el.addEventListener('focus', function(){ humanInteracted = true; });
+  });
+
+  /* ── Sanitisation : retire tout HTML/script/SQL des inputs ── */
+  function sanitize(str){
+    return str
+      .replace(/<[^>]*>/g, '')                          /* supprime balises HTML */
+      .replace(/javascript:/gi, '')                      /* supprime js: links */
+      .replace(/on\w+\s*=/gi, '')                       /* supprime onload= onclick= etc */
+      .replace(/(['";])\s*(or|and|union|select|insert|drop|update|delete|exec)\s/gi, '') /* injection SQL basique */
+      .replace(/\x00/g, '')                              /* null bytes */
+      .trim()
+      .slice(0, 2000);                                   /* longueur max absolue */
+  }
+
+  /* ── Validation champs ── */
+  function validate(){
+    var prenom   = sanitize(form.querySelector('[name="prenom"]').value);
+    var nom      = sanitize(form.querySelector('[name="nom"]').value);
+    var email    = sanitize(form.querySelector('[name="email"]').value);
+    var tel      = sanitize(form.querySelector('[name="telephone"]').value);
+    var message  = sanitize(form.querySelector('[name="message"]').value);
+    var honey    = form.querySelector('[name="_honeypot"]').value;
+
+    /* Honeypot : bot a rempli le champ caché */
+    if(honey !== '') return false;
+
+    /* Bot timing : formulaire soumis en moins de 3s */
+    if(Date.now() - formLoadTime < 3000) return false;
+
+    /* Pas d'interaction humaine détectée */
+    if(!humanInteracted) return false;
+
+    /* Champs obligatoires */
+    if(!prenom || prenom.length < 2) return false;
+    if(!nom    || nom.length < 2)    return false;
+    if(!message|| message.length < 10) return false;
+
+    /* Validation email */
+    if(!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email)) return false;
+
+    /* Longueurs max */
+    if(prenom.length > 60)  return false;
+    if(nom.length > 60)     return false;
+    if(email.length > 120)  return false;
+    if(tel.length > 20)     return false;
+    if(message.length > 2000) return false;
+
+    /* Patterns spam : trop de liens dans le message */
+    var linkCount = (message.match(/https?:\/\//g) || []).length;
+    if(linkCount > 2) return false;
+
+    /* Mots interdits évidents */
+    var spamWords = /\b(viagra|casino|bitcoin|crypto|loan|prize|winner|click here|free money|make money fast)\b/i;
+    if(spamWords.test(message)) return false;
+
+    return { prenom, nom, email, tel, message };
+  }
+
   form.addEventListener('submit', async function(e){
     e.preventDefault();
-    if(form.querySelector('[name="_honeypot"]').value !== ''){return;}
-    const now = Date.now();
-    if(now - lastSubmit < 30000){return;}
-    lastSubmit = now;
-    const btn = form.querySelector('button[type="submit"]');
-    if(btn) btn.disabled = true;
+    var errDiv = document.getElementById('f-error');
+    if(errDiv) errDiv.style.display = 'none';
+
+    var data = validate();
+    if(!data) return; /* silencieux pour les bots, pas de feedback */
+
+    /* Construire FormData nettoyé */
+    var fd = new FormData();
+    fd.append('prenom',    data.prenom);
+    fd.append('nom',       data.nom);
+    fd.append('email',     data.email);
+    fd.append('telephone', data.tel);
+    fd.append('message',   data.message);
+    fd.append('_subject',  'Nouvelle demande de site mariage · Etrah');
+    fd.append('_language', 'fr');
+
     try {
-      const res = await fetch(form.action, {method:'POST',body:new FormData(form),headers:{Accept:'application/json'}});
+      var res = await fetch(form.action, {
+        method: 'POST',
+        body: fd,
+        headers: { Accept: 'application/json' }
+      });
       if(res.ok){
-        form.style.display='none';
-        const ok = document.getElementById('f-success');
-        if(ok) ok.style.display='block';
+        form.style.display = 'none';
+        var ok = document.getElementById('f-success');
+        if(ok) ok.style.display = 'block';
       } else {
-        const err = document.getElementById('f-error');
-        if(err) err.style.display='block';
-        if(btn) btn.disabled = false;
+        if(errDiv) errDiv.style.display = 'block';
       }
-    } catch(e){
-      const err = document.getElementById('f-error');
-      if(err) err.style.display='block';
-      if(btn) btn.disabled = false;
+    } catch(err){
+      if(errDiv) errDiv.style.display = 'block';
     }
   });
-}
+})();
 /* ── Typewriter hero ── */
 (function(){
   var el = document.getElementById('typed-em');
