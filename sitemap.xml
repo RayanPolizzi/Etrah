@@ -9,6 +9,10 @@
 
   <!-- Articles du magazine -->
   <url>
+    <loc>https://www.site-mariage.com/magazine.html</loc>
+    <lastmod>2026-10-19</lastmod>
+  </url>
+  <url>
     <loc>https://www.site-mariage.com/pourquoi-creer-site-mariage-change-organisation.html</loc>
     <lastmod>2026-06-22</lastmod>
   </url>

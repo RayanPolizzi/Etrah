@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
 Etrah — Publication automatique des articles planifiés
-Appelé par GitHub Actions chaque jour à 9h
+Appelé par GitHub Actions chaque jour à 9h (1 article par semaine selon queue.json)
 """
 
 import json, subprocess, sys
@@ -19,7 +19,10 @@ def main():
         return
 
     articles = json.loads(QUEUE.read_text(encoding="utf-8"))
-    to_publish = [a for a in articles if a.get("date") == TODAY and a.get("status") == "pending"]
+    # Rattrape un article en retard si un jour a été manqué, mais publie au maximum 1 article par exécution
+    due = sorted((a for a in articles if a.get("status") == "pending" and a.get("date", "9999") <= TODAY),
+                 key=lambda a: a["date"])
+    to_publish = due[:1]
 
     if not to_publish:
         print(f"Aucun article prévu pour le {TODAY}.")
