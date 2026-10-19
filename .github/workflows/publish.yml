@@ -1,11 +1,11 @@
 name: Publier les articles Etrah
 
-# Vérifie chaque jour s'il y a un article prévu dans queue.json (1 par semaine, le mardi).
+# Vérifie chaque jour s'il y a un article prévu dans queue.json (3 par semaine : lundi, mercredi, vendredi).
 # Lancement manuel possible depuis l'onglet Actions, avec un mode "test" qui génère un article
 # complet sans rien publier (pour vérifier la clé API, le modèle et la qualité SEO).
 on:
   schedule:
-    - cron: '0 7 * * *'
+    - cron: '0 5 * * *'
   workflow_dispatch:
     inputs:
       test:

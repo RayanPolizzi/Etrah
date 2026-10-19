@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
 Etrah — Publication automatique des articles planifiés
-Appelé par GitHub Actions chaque jour (1 article par semaine selon les dates de queue.json).
+Appelé par GitHub Actions chaque jour (3 articles par semaine selon les dates de queue.json).
 
 - Publie au maximum 1 article par exécution (rattrape un article en retard).
 - En cas d'échec, l'article reste en attente et est retenté le lendemain (3 essais maximum),
