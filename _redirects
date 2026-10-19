@@ -2,3 +2,9 @@
 /mentions-legales    /mentions-legales.html    200
 /politique-confidentialite    /politique-confidentialite.html    200
 /cgv    /cgv.html    200
+
+# Articles en double fusionnés (301 permanentes)
+/creer-site-mariage-change-organisation.html    /pourquoi-creer-site-mariage-change-organisation.html    301
+/creer-site-mariage-change-organisation    /pourquoi-creer-site-mariage-change-organisation.html    301
+/pourquoi-creer-un-site-de-mariage-change-tout-organisation.html    /pourquoi-creer-site-mariage-change-organisation.html    301
+/pourquoi-creer-un-site-de-mariage-change-tout-organisation    /pourquoi-creer-site-mariage-change-organisation.html    301

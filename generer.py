@@ -13,7 +13,7 @@ from pathlib import Path
 
 # ── CONFIG ────────────────────────────────────────────────────────────────────
 BASE_DIR  = Path(__file__).parent
-SITE_URL  = "https://site-mariage.com"
+SITE_URL  = "https://www.site-mariage.com"
 TODAY     = datetime.now().strftime("%Y-%m-%d")
 MONTH_FR  = {
     "01":"Janvier","02":"Février","03":"Mars","04":"Avril",
@@ -141,6 +141,7 @@ ARTICLE_TEMPLATE = """\
 <meta property="article:modified_time" content="{date_iso}T09:00:00+02:00">
 <meta property="article:author" content="Rayan Polizzi">
 <link rel="canonical" href="{page_url}">
+<meta property="og:url" content="{page_url}">
 <link rel="icon" type="image/svg+xml" href="favicon.svg">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400;1,600&family=Josefin+Sans:wght@100;200;300&family=Pinyon+Script&display=swap" rel="stylesheet">
@@ -149,7 +150,7 @@ ARTICLE_TEMPLATE = """\
 </script>
 <style>
 *{{margin:0;padding:0;box-sizing:border-box}}
-:root{{--ink:#1a1612;--ink2:#2d2620;--ink3:#3a2e24;--cream:#f5f0e8;--cream2:#ede8dc;--gold:#b8922a;--gold2:#d4aa40;--white:#fdfaf5}}
+:root{{--ink:#1a1612;--ink2:#2d2620;--ink3:#3a2e24;--cream:#f5f0e8;--cream2:#ede8dc;--gold:#7f6218;--gold2:#d4aa40;--white:#fdfaf5}}
 html{{scroll-behavior:smooth;-webkit-font-smoothing:antialiased}}
 body{{background:var(--white);color:var(--ink);font-family:'Cormorant Garamond',serif;overflow-x:hidden}}
 #pb{{position:fixed;top:0;left:0;height:2px;background:var(--gold);z-index:9999;width:0%;transition:width .1s}}
@@ -232,7 +233,7 @@ footer{{background:var(--white);border-top:1px solid rgba(184,146,42,.12);paddin
 </head>
 <body>
 <div id="pb"></div>
-<nav><a class="logo" href="index.html">Etrah</a><a class="back" href="index.html">← Magazine</a></nav>
+<nav><a class="logo" href="/">Etrah</a><a class="back" href="/#blog">← Magazine</a></nav>
 
 <div style="padding-top:65px">
   <div class="hero">
@@ -260,7 +261,7 @@ footer{{background:var(--white);border-top:1px solid rgba(184,146,42,.12);paddin
       <p class="afc-eyebrow">Prêts à vous lancer ?</p>
       <h3 class="afc-title">Démarrez votre projet<br>en 2 minutes</h3>
       <p class="afc-sub">Dites-nous tout sur votre mariage — nous revenons vers vous sous 24h avec une proposition personnalisée.</p>
-      <a class="afc-btn" href="index.html#contact">Démarrer mon projet →</a>
+      <a class="afc-btn" href="/#contact">Démarrer mon projet →</a>
     </div>
   </div>
 
@@ -293,7 +294,7 @@ footer{{background:var(--white);border-top:1px solid rgba(184,146,42,.12);paddin
   <div class="fc"><div class="fci">
     <div class="fco"><div class="fcl"></div><div class="fcd"></div><div class="fcl" style="background:linear-gradient(to left,transparent,rgba(184,146,42,.5))"></div></div>
     <h2 class="fct">Votre mariage mérite<br>un site <strong>inoubliable</strong></h2>
-    <a class="fcb" href="index.html#contact">Démarrer mon projet</a>
+    <a class="fcb" href="/#contact">Démarrer mon projet</a>
     <span class="fcn">Sur-mesure · 500€ · Livraison en 10 jours</span>
   </div></div>
 </div>
@@ -327,7 +328,7 @@ def build_html(title, data, slug, hero_url, date_fr, date_iso):
         read_time   = html.escape(data.get("read_time", "5 min de lecture")),
         intro       = html.escape(data.get("intro", "")),
         body        = body,
-        page_url    = f"{SITE_URL}/{slug}",
+        page_url    = f"{SITE_URL}/{slug}.html",
         site_url    = SITE_URL,
     )
 
@@ -336,7 +337,7 @@ def update_sitemap(slug, date_iso):
     p = BASE_DIR / "sitemap.xml"
     c = p.read_text(encoding="utf-8")
     entry = f"""  <url>
-    <loc>{SITE_URL}/{slug}</loc>
+    <loc>{SITE_URL}/{slug}.html</loc>
     <lastmod>{date_iso}</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
@@ -424,6 +425,7 @@ def main():
         raw = input("Titre(s) de l'article (sépare par | pour plusieurs) : ").strip()
         titles = [t.strip() for t in raw.split("|") if t.strip()]
 
+    failed = 0
     for title in titles:
         print(f"\n✦  «{title}»")
         print("   → Génération du contenu...")
@@ -431,6 +433,7 @@ def main():
             data = generate(title, client)
         except Exception as e:
             print(f"   ❌ Erreur : {e}")
+            failed += 1
             continue
 
         slug     = data.get("slug") or slugify(title)
@@ -454,4 +457,14 @@ def main():
 
         # Index
         try:
-            update_index(tit
+            update_index(title, slug, category, DATE_FR, hero_url, excerpt)
+            print("   ✓ index.html mis à jour")
+        except Exception as e:
+            print(f"   ⚠ index : {e}")
+
+    if failed:
+        sys.exit(f"❌ {failed} article(s) non générés")
+
+
+if __name__ == "__main__":
+    main()
