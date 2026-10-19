@@ -74,6 +74,18 @@ jobs:
           if-no-files-found: ignore
           retention-days: 7
 
+      - name: Copier l'article de test sur la branche test-output (hors site)
+        if: inputs.test
+        run: |
+          git config user.name "Etrah Studio"
+          git config user.email "studio@site-mariage.com"
+          mkdir -p /tmp/out && cp -r test-output /tmp/out/
+          git checkout -q --orphan test-output
+          git rm -rq --cached . && git clean -fdxq
+          cp -r /tmp/out/test-output . && git add test-output
+          git commit -qm "Article de test (non publié)"
+          git push -qf origin test-output
+
       - name: Publier l'article de la semaine
         id: pub
         if: ${{ !inputs.test }}
