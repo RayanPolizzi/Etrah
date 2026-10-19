@@ -1,9 +1,21 @@
 name: Publier les articles Etrah
 
+# Vérifie chaque jour s'il y a un article prévu dans queue.json (1 par semaine, le mardi).
+# Lancement manuel possible depuis l'onglet Actions, avec un mode "test" qui génère un article
+# complet sans rien publier (pour vérifier la clé API, le modèle et la qualité SEO).
 on:
   schedule:
     - cron: '0 7 * * *'
   workflow_dispatch:
+    inputs:
+      test:
+        description: "Mode test : générer un article de vérification sans rien publier"
+        type: boolean
+        default: false
+
+concurrency:
+  group: publish
+  cancel-in-progress: false
 
 jobs:
   publish:
@@ -25,34 +37,53 @@ jobs:
       - name: Installer les dépendances
         run: pip install anthropic
 
-      - name: Publier les articles planifiés
+      - name: Test de génération (rien n'est publié)
+        if: inputs.test
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+        run: |
+          TITLE=$(python3 -c "import json;q=json.load(open('queue.json'));print(next(a['title'] for a in q if a.get('status')=='pending'))")
+          python generer.py --dry-run "$TITLE"
+
+      - name: Publier l'article de la semaine
+        id: pub
+        if: ${{ !inputs.test }}
+        continue-on-error: true
         env:
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
         run: python .github/scripts/publish.py
 
       - name: Commit et push
+        if: ${{ !inputs.test }}
         run: |
           git config user.name "Etrah Studio"
           git config user.email "studio@site-mariage.com"
           git add -A
           if git diff --staged --quiet; then
-            echo "published=0" >> "$GITHUB_ENV"
+            echo "Rien à enregistrer."
           else
-            git commit -m "✦ Article publié automatiquement — $(date +'%Y-%m-%d')"
+            MSG="${{ steps.pub.outputs.message }}"
+            git commit -m "✦ ${MSG:-Mise à jour automatique} — $(date +'%Y-%m-%d')"
+            git pull --rebase -q origin main
             git push
-            echo "published=1" >> "$GITHUB_ENV"
           fi
 
-      - name: Signaler les nouvelles pages à IndexNow
-        if: env.published == '1'
+      - name: Signaler les nouvelles pages à IndexNow (Bing…)
+        if: steps.pub.outputs.published == '1'
         run: |
           sleep 120
           python3 .github/scripts/indexnow.py HEAD~1
 
       - name: Resoumettre le sitemap à Google Search Console
-        if: env.published == '1'
+        if: steps.pub.outputs.published == '1'
         env:
           GSC_SERVICE_ACCOUNT: ${{ secrets.GSC_SERVICE_ACCOUNT }}
         run: |
           pip install -q google-auth requests
           python3 .github/scripts/gsc_sitemap.py
+
+      - name: Signaler l'échec de génération
+        if: steps.pub.outcome == 'failure'
+        run: |
+          echo "::error::La génération de l'article a échoué. Voir l'étape « Publier l'article de la semaine »."
+          exit 1

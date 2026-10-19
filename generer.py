@@ -33,7 +33,11 @@ HERO_IMAGES = [
     "https://images.unsplash.com/photo-1491895200222-0fc4a4c35e18?w=1400&q=85&auto=format&fit=crop",
 ]
 
-MODEL = "claude-sonnet-5-5"
+MODEL = os.environ.get("ETRAH_MODEL", "claude-sonnet-5-5")
+MAX_TOKENS = 8000
+MAX_ATTEMPTS = 3          # nouvelles tentatives si l'article ne passe pas le contrôle qualité
+MIN_WORDS = 750           # longueur minimale du contenu (hors titres)
+MIN_INTERNAL_LINKS = 3    # liens internes minimum dans le corps de l'article
 
 # ── HELPERS ───────────────────────────────────────────────────────────────────
 def slugify(t):
@@ -72,15 +76,25 @@ SYSTEM = (
 PROMPT = """Génère un article de blog complet et SEO-optimisé pour le titre : "{title}"
 
 Public : couples français qui planifient leur mariage.
-Longueur : 900-1100 mots de contenu réel.
-Structure : introduction percutante + 5-7 sections variées + conclusion orientée action.
+Longueur : 1000-1300 mots de contenu réel.
+Structure : introduction percutante + 5-7 sections variées + conclusion orientée action + FAQ.
+
+Règles SEO (obligatoires) :
+- Choisis UN mot-clé principal (la requête qu'un couple taperait sur Google pour ce sujet) et donne-le dans "keyword".
+- Le mot-clé principal apparaît dans la meta description, dans la 1re phrase de l'intro et dans au moins un H2.
+- Utilise naturellement 3 à 5 variantes et termes associés (champ sémantique), sans bourrage.
+- H2 clairs et descriptifs ; au moins deux H2 formulés comme une question que se posent les couples.
+- Meta description entre 130 et 155 caractères, incitative, avec le mot-clé.
+- Paragraphes courts (2 à 4 phrases), phrases simples, réponse directe à la question dès le début de chaque section.
+- Section "faq" en fin d'article : 3 questions précises (différentes des H2) avec des réponses de 2-3 phrases.
 
 Réponds UNIQUEMENT avec un JSON valide, structure exacte :
 
 {{
   "slug": "slug-sans-accents-avec-tirets",
+  "keyword": "mot-clé principal",
   "category": "Catégorie · Sous-catégorie",
-  "meta_description": "Description SEO max 155 caractères",
+  "meta_description": "Description SEO de 130 à 155 caractères",
   "read_time": "X min de lecture",
   "hero_alt": "Description courte de l'image idéale pour cet article",
   "intro": "2-3 phrases d'accroche percutantes en italique",
@@ -89,15 +103,19 @@ Réponds UNIQUEMENT avec un JSON valide, structure exacte :
     {{"type":"tip",   "text":"Conseil pratique concret en une ou deux phrases."}},
     {{"type":"list",  "h2":"Titre liste", "items":["**Item 1** — explication","**Item 2** — explication"]}},
     {{"type":"text",  "h2":"Autre section", "paragraphs":["..."]}},
-    {{"type":"text",  "h2":"Conclusion ou section finale", "paragraphs":["..."]}}
+    {{"type":"text",  "h2":"Conclusion ou section finale", "paragraphs":["..."]}},
+    {{"type":"faq",   "items":[{{"q":"Question précise ?","a":"Réponse en 2-3 phrases."}}]}}
   ],
   "excerpt": "1-2 phrases pour la miniature sur la page d'accueil."
 }}
 
 Maillage interne (obligatoire) :
-- Insère 3 à 5 liens internes DANS les paragraphes, au format [texte d'ancre descriptif](url).
-- URLs autorisées UNIQUEMENT : celles de la liste ci-dessous, plus /#offres (offre et prix) et /#contact.
-- Ancres naturelles et variées (jamais "cliquez ici"), une seule fois par URL, uniquement si le sujet s'y prête.
+- Insère 4 à 6 liens internes DANS les paragraphes ou les listes, au format [texte d'ancre descriptif](url).
+- Au moins 3 liens vers des articles existants (liste ci-dessous, écris le nom de fichier exact, ex. quand-creer-site-mariage.html),
+  répartis dans l'article (pas tous dans la même section), plus 1 lien vers /#offres (offre et prix) ou /#contact.
+- URLs autorisées UNIQUEMENT : celles de la liste ci-dessous, plus /#offres et /#contact.
+- Ancres naturelles, descriptives et variées, qui contiennent les mots-clés de l'article cible (jamais "cliquez ici", "cet article"),
+  une seule fois par URL.
 
 Articles existants du magazine :
 {existing}
@@ -109,17 +127,83 @@ Règles strictes :
 - Slug en français sans accents ni caractères spéciaux
 - Chaque section "text" : au moins 2 paragraphes"""
 
+def parse_json(raw):
+    """Extrait l'objet JSON de la réponse, même entouré de texte ou de ```."""
+    raw = raw.strip()
+    raw = re.sub(r"^```(?:json)?\n?", "", raw)
+    raw = re.sub(r"\n?```$", "", raw)
+    start, end = raw.find("{"), raw.rfind("}")
+    if start < 0 or end < start:
+        raise ValueError("aucun JSON dans la réponse")
+    return json.loads(raw[start:end + 1])
+
+def section_texts(data):
+    """Tout le texte rédactionnel de l'article (pour compter mots et liens)."""
+    out = [data.get("intro", "")]
+    for s in data.get("sections", []):
+        out += s.get("paragraphs", []) + s.get("items", []) if s.get("type") != "faq" else []
+        if s.get("type") == "tip":
+            out.append(s.get("text", ""))
+        if s.get("type") == "faq":
+            out += [f'{i.get("q","")} {i.get("a","")}' for i in s.get("items", []) if isinstance(i, dict)]
+    return [t for t in out if isinstance(t, str)]
+
+def internal_links(data):
+    """Liens internes valides (ceux qui seront réellement publiés)."""
+    found = []
+    for t in section_texts(data):
+        for url in re.findall(r"\[[^\]]+\]\(([^)\s]+)\)", t):
+            if url.strip() in ALLOWED_LINKS:
+                found.append(url.strip())
+    return found
+
+def check_quality(data, title):
+    """Contrôle SEO avant publication. Renvoie la liste des problèmes (vide = OK)."""
+    problems = []
+    secs = data.get("sections", [])
+    words_n = len(re.sub(r"\[([^\]]+)\]\([^)]+\)", r"\1", " ".join(section_texts(data))).split())
+    if words_n < MIN_WORDS:
+        problems.append(f"article trop court ({words_n} mots, minimum {MIN_WORDS})")
+    h2 = [s.get("h2", "") for s in secs if s.get("h2")]
+    if len(h2) < 4:
+        problems.append(f"pas assez de sections H2 ({len(h2)}, minimum 4)")
+    md = data.get("meta_description", "")
+    if not 110 <= len(md) <= 160:
+        problems.append(f"meta description de {len(md)} caractères (attendu 130-155)")
+    links = internal_links(data)
+    art_links = {l for l in links if l.endswith(".html") and l != "magazine.html"}
+    if len(set(links)) < MIN_INTERNAL_LINKS or len(art_links) < 2:
+        problems.append(f"maillage insuffisant : {len(set(links))} lien(s) interne(s) valide(s) dont "
+                        f"{len(art_links)} vers des articles (minimum {MIN_INTERNAL_LINKS} dont 2 articles) — "
+                        "utilise exactement les noms de fichiers de la liste")
+    if not any(s.get("type") == "faq" and len(s.get("items", [])) >= 3 for s in secs):
+        problems.append("section FAQ absente ou incomplète (3 questions)")
+    return problems
+
 def generate(title, client, existing_txt=""):
-    msg = client.messages.create(
-        model=MODEL,
-        max_tokens=4096,
-        system=SYSTEM,
-        messages=[{"role":"user","content":PROMPT.format(title=title, existing=existing_txt)}]
-    )
-    raw = msg.content[0].text.strip()
-    raw = re.sub(r"^```(?:json)?\n?","",raw)
-    raw = re.sub(r"\n?```$","",raw)
-    return json.loads(raw)
+    """Génère l'article, vérifie sa qualité et relance (max MAX_ATTEMPTS) en expliquant les défauts."""
+    messages = [{"role": "user", "content": PROMPT.format(title=title, existing=existing_txt)}]
+    last_problems = []
+    for attempt in range(1, MAX_ATTEMPTS + 1):
+        msg = client.messages.create(model=MODEL, max_tokens=MAX_TOKENS, system=SYSTEM, messages=messages)
+        raw = "".join(b.text for b in msg.content if getattr(b, "type", "") == "text")
+        if getattr(msg, "stop_reason", "") == "max_tokens":
+            last_problems = ["réponse coupée (trop longue)"]
+        else:
+            try:
+                data = parse_json(raw)
+                last_problems = check_quality(data, title)
+                if not last_problems:
+                    print(f"   ✓ contrôle qualité OK (tentative {attempt})")
+                    return data
+            except Exception as e:
+                last_problems = [f"JSON invalide : {e}"]
+        print(f"   ⚠ tentative {attempt} refusée : " + " ; ".join(last_problems))
+        messages = messages[:1] + [
+            {"role": "assistant", "content": raw or "{}"},
+            {"role": "user", "content": "L'article ne respecte pas les règles : " + " ; ".join(last_problems)
+             + ". Corrige ces points et renvoie l'article COMPLET, uniquement en JSON valide."}]
+    raise RuntimeError("contrôle qualité non passé après %d tentatives : %s" % (MAX_ATTEMPTS, " ; ".join(last_problems)))
 
 # ── CONSTRUCTION HTML ─────────────────────────────────────────────────────────
 def section_html(s):
@@ -143,19 +227,56 @@ def section_html(s):
     elif t == "list":
         lis = "\n".join(f"<li>{parse_inline(i)}</li>" for i in s.get("items",[]))
         out += f"<ul>\n{lis}\n</ul>\n"
+    elif t == "faq":
+        out = '<h2>Questions fréquentes</h2>\n'
+        for i in s.get("items", []):
+            if isinstance(i, dict) and i.get("q") and i.get("a"):
+                out += f'<h3>{html.escape(i["q"])}</h3>\n<p>{parse_inline(i["a"])}</p>\n'
     return out
+
+def strip_md(t):
+    """Texte brut sans markdown (pour les données structurées)."""
+    t = re.sub(r"\[([^\]]+)\]\([^)]+\)", r"\1", t)
+    return re.sub(r"\*+([^*]+)\*+", r"\1", t)
+
+def json_ld(title, data, page_url, hero_url, date_iso):
+    """Données structurées : Article + fil d'Ariane + FAQ."""
+    graph = [
+        {"@type": "Article", "headline": title, "description": data.get("meta_description", ""),
+         "url": page_url, "mainEntityOfPage": page_url, "datePublished": date_iso, "dateModified": date_iso,
+         "author": {"@type": "Person", "name": "Rayan Polizzi", "url": f"{SITE_URL}/"},
+         "publisher": {"@type": "Organization", "name": "Etrah", "url": f"{SITE_URL}/",
+                       "logo": {"@type": "ImageObject", "url": f"{SITE_URL}/favicon.svg"}},
+         "inLanguage": "fr-FR", "image": hero_url,
+         **({"keywords": data["keyword"]} if data.get("keyword") else {})},
+        {"@type": "BreadcrumbList", "itemListElement": [
+            {"@type": "ListItem", "position": 1, "name": "Accueil", "item": f"{SITE_URL}/"},
+            {"@type": "ListItem", "position": 2, "name": "Magazine", "item": f"{SITE_URL}/magazine.html"},
+            {"@type": "ListItem", "position": 3, "name": title, "item": page_url}]},
+    ]
+    faq = [i for s in data.get("sections", []) if s.get("type") == "faq"
+           for i in s.get("items", []) if isinstance(i, dict) and i.get("q") and i.get("a")]
+    if faq:
+        graph.append({"@type": "FAQPage", "mainEntity": [
+            {"@type": "Question", "name": i["q"], "acceptedAnswer": {"@type": "Answer", "text": strip_md(i["a"])}}
+            for i in faq]})
+    # échappe "</" pour qu'aucun texte ne puisse fermer la balise <script>
+    return json.dumps({"@context": "https://schema.org", "@graph": graph}, ensure_ascii=False).replace("</", "<\\/")
 
 ARTICLE_TEMPLATE = """\
 <!DOCTYPE html>
 <html lang="fr">
 <head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>{title_esc}</title>
+<title>{title_tag}</title>
 <meta name="description" content="{meta_desc}">
+<meta name="robots" content="index, follow, max-image-preview:large">
 <meta property="og:title" content="{title_esc}">
 <meta property="og:description" content="{meta_desc}">
 <meta property="og:type" content="article">
 <meta property="og:image" content="{hero_url}">
+<meta property="og:image:alt" content="{hero_alt}">
+<meta name="twitter:card" content="summary_large_image">
 <meta property="article:published_time" content="{date_iso}T09:00:00+02:00">
 <meta property="article:modified_time" content="{date_iso}T09:00:00+02:00">
 <meta property="article:author" content="Rayan Polizzi">
@@ -168,7 +289,7 @@ ARTICLE_TEMPLATE = """\
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400;1,600&family=Josefin+Sans:wght@100;200;300&family=Pinyon+Script&display=swap"><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400;1,600&family=Josefin+Sans:wght@100;200;300&family=Pinyon+Script&display=swap" media="print" onload="this.media='all'"><noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400;1,600&family=Josefin+Sans:wght@100;200;300&family=Pinyon+Script&display=swap"></noscript>
 <script type="application/ld+json">
-{{"@context":"https://schema.org","@type":"Article","headline":"{title_esc}","url":"{page_url}","datePublished":"{date_iso}","dateModified":"{date_iso}","author":{{"@type":"Person","name":"Rayan Polizzi","url":"{site_url}/"}},"publisher":{{"@type":"Organization","name":"Etrah","url":"{site_url}/","logo":{{"@type":"ImageObject","url":"{site_url}/favicon.svg"}}}},"inLanguage":"fr-FR","image":"{hero_url}"}}
+{json_ld}
 </script>
 <style>
 *{{margin:0;padding:0;box-sizing:border-box}}
@@ -204,6 +325,10 @@ nav{{position:fixed;top:0;left:0;right:0;z-index:500;padding:20px 52px;display:f
 .body ul{{list-style:none;margin:0 0 28px;padding:0}}
 .body ul li{{font-size:17px;color:var(--ink2);line-height:1.85;padding:10px 0 10px 24px;position:relative;border-bottom:1px solid rgba(184,146,42,.07)}}
 .body ul li:last-child{{border-bottom:none}}
+.body h3{{font-family:'Cormorant Garamond',serif;font-weight:600;font-size:22px;color:var(--ink);margin:30px 0 10px;line-height:1.3}}
+.body a{{color:var(--gold);text-decoration:underline;text-underline-offset:3px}}
+.crumbs{{font-family:'Josefin Sans',sans-serif;font-weight:200;font-size:9px;letter-spacing:3px;text-transform:uppercase;color:var(--ink3);margin-bottom:18px}}
+.crumbs a{{color:var(--ink3);text-decoration:none}}.crumbs a:hover{{color:var(--gold)}}
 .body ul li::before{{content:'◇';position:absolute;left:0;color:var(--gold);font-size:10px;line-height:2.2}}
 .quote{{border-left:2px solid var(--gold);padding:22px 32px;margin:44px 0;background:rgba(184,146,42,.04)}}
 .quote p{{font-style:italic;font-size:20px;color:var(--ink);margin:0;line-height:1.75}}
@@ -258,7 +383,7 @@ footer{{background:var(--white);border-top:1px solid rgba(184,146,42,.12);paddin
 </head>
 <body>
 <div id="pb"></div>
-<nav><a class="logo" href="/">Etrah</a><a class="back" href="/#blog">← Magazine</a></nav>
+<nav><a class="logo" href="/">Etrah</a><a class="back" href="magazine.html">← Magazine</a></nav>
 
 <div style="padding-top:65px">
   <div class="hero">
@@ -270,6 +395,7 @@ footer{{background:var(--white);border-top:1px solid rgba(184,146,42,.12);paddin
   </div>
 
   <div class="wrap">
+    <nav class="crumbs" aria-label="Fil d'Ariane" style="position:static;padding:0;background:none;border:0;backdrop-filter:none;display:block"><a href="/">Accueil</a> › <a href="magazine.html">Magazine</a> › <span>{title_esc}</span></nav>
     <div class="meta">
       <span class="mdate">{date_fr}</span>
       <div class="msep"></div>
@@ -329,7 +455,11 @@ footer{{background:var(--white);border-top:1px solid rgba(184,146,42,.12);paddin
 
 def build_html(title, data, slug, hero_url, date_fr, date_iso, related_html=""):
     body = "\n".join(section_html(s) for s in data.get("sections", []))
+    page_url = f"{SITE_URL}/{slug}.html"
+    title_tag = f"{title} | Etrah" if len(title) <= 52 else title
     return ARTICLE_TEMPLATE.format(
+        title_tag   = html.escape(title_tag),
+        json_ld     = json_ld(title, data, page_url, hero_url, date_iso),
         title_esc   = html.escape(title),
         meta_desc   = html.escape(data.get("meta_description", "")),
         hero_url    = hero_url,
@@ -340,9 +470,8 @@ def build_html(title, data, slug, hero_url, date_fr, date_iso, related_html=""):
         read_time   = html.escape(data.get("read_time", "5 min de lecture")),
         intro       = html.escape(data.get("intro", "")),
         body        = body,
-        page_url    = f"{SITE_URL}/{slug}.html",
+        page_url    = page_url,
         related     = related_html,
-        site_url    = SITE_URL,
     )
 
 # ── MISE À JOUR SITEMAP ───────────────────────────────────────────────────────
@@ -360,6 +489,15 @@ def update_sitemap(slug, date_iso):
         c = c.replace(marker, entry + "\n\n" + marker)
     else:
         c = c.replace("</urlset>", entry + "\n\n</urlset>")
+    p.write_text(c, encoding="utf-8")
+
+def touch_sitemap(files, date_iso):
+    """Met à jour <lastmod> des pages modifiées (accueil, magazine, articles qui reçoivent un lien)."""
+    p = BASE_DIR / "sitemap.xml"
+    c = p.read_text(encoding="utf-8")
+    for f in files:
+        loc = f"{SITE_URL}/" if f == "index.html" else f"{SITE_URL}/{f}"
+        c = re.sub(rf"(<loc>{re.escape(loc)}</loc>\s*<lastmod>)[^<]*(</lastmod>)", rf"\g<1>{date_iso}\g<2>", c)
     p.write_text(c, encoding="utf-8")
 
 
@@ -382,6 +520,8 @@ def load_articles():
                 d = json.loads(block)
             except Exception:
                 continue
+            # format simple {"@type":"Article"} ou format {"@graph":[...]}
+            d = next((g for g in d.get("@graph", []) if g.get("@type") == "Article"), d)
             if d.get("@type") == "Article":
                 desc = re.search(r'<meta name="description" content="([^"]*)"', c)
                 img = re.search(r'<meta property="og:image" content="([^"]*)"', c)
@@ -419,11 +559,12 @@ def related_block(rel):
     return ('  <div class="related">\n    <div class="rl">À lire aussi</div>\n    <div class="rg">\n'
             + cards + '    </div>\n    <p style="text-align:center;margin-top:24px"><a href="magazine.html">Tous les articles du magazine →</a></p>\n  </div>\n')
 
-def add_backlinks(new_file, new_title, rel, max_links=2):
-    """Ajoute un lien vers le nouvel article dans les anciens articles les plus proches."""
-    done = 0
+def add_backlinks(new_file, new_title, rel, max_links=3):
+    """Ajoute un lien vers le nouvel article dans les anciens articles les plus proches.
+    Renvoie la liste des fichiers modifiés."""
+    done = []
     for a in rel:
-        if done >= max_links:
+        if len(done) >= max_links:
             break
         p = BASE_DIR / a["file"]
         c = p.read_text(encoding="utf-8")
@@ -437,7 +578,7 @@ def add_backlinks(new_file, new_title, rel, max_links=2):
         else:
             continue
         p.write_text(c, encoding="utf-8")
-        done += 1
+        done.append(a["file"])
     return done
 
 def build_magazine(arts):
@@ -559,7 +700,42 @@ def update_index(title, slug, category, date_fr, hero_url, excerpt):
     p.write_text(c, encoding="utf-8")
 
 # ── MAIN ──────────────────────────────────────────────────────────────────────
+def audit_page(path):
+    """Vérifie la page générée : balises SEO et liens internes qui pointent vers des pages existantes."""
+    c = path.read_text(encoding="utf-8")
+    problems = []
+    for tag, rx in [("title", r"<title>[^<]{10,}</title>"), ("meta description", r'<meta name="description" content="[^"]{100,}"'),
+                    ("canonical", r'<link rel="canonical" href="https://www\.site-mariage\.com/[^"]+\.html"'),
+                    ("h1 unique", r"<h1[ >]")]:
+        if not re.search(rx, c):
+            problems.append(f"{tag} manquant")
+    if len(re.findall(r"<h1[ >]", c)) != 1:
+        problems.append("il doit y avoir exactement un H1")
+    for block in re.findall(r'<script type="application/ld\+json">\s*(.*?)\s*</script>', c, re.S):
+        try:
+            json.loads(block)
+        except Exception as e:
+            problems.append(f"JSON-LD invalide ({e})")
+    body = c.split('id="ab"', 1)[-1].split('class="article-form-cta"', 1)[0]
+    for href in re.findall(r'href="([^"#:]+\.html)"', body):
+        if not (path.parent / href).exists():
+            problems.append(f"lien cassé : {href}")
+    return problems
+
 def main():
+    global BASE_DIR
+    args = [a for a in sys.argv[1:] if not a.startswith("--")]
+    dry_run = "--dry-run" in sys.argv
+    if dry_run:
+        # Test complet sans toucher au site : on travaille sur une copie temporaire
+        import tempfile, shutil
+        tmp = Path(tempfile.mkdtemp(prefix="etrah-test-"))
+        for f in list(BASE_DIR.glob("*.html")) + [BASE_DIR / "sitemap.xml", BASE_DIR / "llms.txt"]:
+            if f.exists():
+                shutil.copy(f, tmp / f.name)
+        BASE_DIR = tmp
+        print(f"MODE TEST : rien n'est publié (copie de travail : {tmp})")
+
     # Anthropic SDK
     try:
         import anthropic
@@ -568,15 +744,15 @@ def main():
         os.system(f"{sys.executable} -m pip install anthropic -q")
         import anthropic
 
-    # Clé API
-    api_key = os.environ.get("ANTHROPIC_API_KEY") or input("Clé API Anthropic : ").strip()
+    # Clé API (jamais de saisie interactive en automatique)
+    api_key = os.environ.get("ANTHROPIC_API_KEY") or ("" if not sys.stdin.isatty() else input("Clé API Anthropic : ").strip())
     if not api_key:
-        sys.exit("❌ Clé API manquante")
+        sys.exit("❌ Clé API manquante (secret GitHub ANTHROPIC_API_KEY)")
     client = anthropic.Anthropic(api_key=api_key)
 
     # Titre(s)
-    if len(sys.argv) > 1:
-        titles = [" ".join(sys.argv[1:])]
+    if args:
+        titles = [" ".join(args)]
     else:
         raw = input("Titre(s) de l'article (sépare par | pour plusieurs) : ").strip()
         titles = [t.strip() for t in raw.split("|") if t.strip()]
@@ -595,7 +771,7 @@ def main():
             failed += 1
             continue
 
-        slug     = data.get("slug") or slugify(title)
+        slug     = slugify(data.get("slug") or title)[:80].strip("-") or slugify(title)
         hero_url = pick_hero(slug)
         excerpt  = data.get("excerpt") or data.get("meta_description", "")
         category = data.get("category", "Magazine")
@@ -605,10 +781,18 @@ def main():
         rel = most_related(title, arts, 3)
         html_content = build_html(title, data, slug, hero_url, DATE_FR, TODAY, related_block(rel))
 
-        # Sauvegarder article
+        # Sauvegarder article puis l'auditer avant de toucher au reste du site
         out = BASE_DIR / f"{slug}.html"
         out.write_text(html_content, encoding="utf-8")
-        print(f"   ✓ {slug}.html  ({len(html_content)//1024}KB)")
+        issues = audit_page(out)
+        if issues:
+            out.unlink()
+            print("   ❌ page refusée : " + " ; ".join(issues))
+            failed += 1
+            continue
+        links = internal_links(data)
+        print(f"   ✓ {slug}.html  ({len(html_content)//1024}KB) — mot-clé : {data.get('keyword','?')} — "
+              f"{len(set(links))} liens internes : {', '.join(sorted(set(links)))}")
 
         # Sitemap
         try:
@@ -626,12 +810,16 @@ def main():
 
         # Maillage : liens depuis les anciens articles proches + hub + llms.txt
         try:
-            n = add_backlinks(f"{slug}.html", title, rel)
+            touched = add_backlinks(f"{slug}.html", title, rel)
             build_magazine(load_articles())
             update_llms(f"{slug}.html", title)
-            print(f"   ✓ maillage : {n} lien(s) ajouté(s), magazine.html à jour")
+            touch_sitemap(touched + ["index.html", "magazine.html"], TODAY)
+            print(f"   ✓ maillage : lien ajouté dans {', '.join(touched) or 'aucun article'}, magazine.html à jour")
         except Exception as e:
             print(f"   ⚠ maillage : {e}")
+
+        if dry_run:
+            print(f"   ✓ TEST RÉUSSI — article de test : {out}")
 
     if failed:
         sys.exit(f"❌ {failed} article(s) non générés")
