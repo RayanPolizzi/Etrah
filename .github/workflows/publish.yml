@@ -48,3 +48,11 @@ jobs:
         run: |
           sleep 120
           python3 .github/scripts/indexnow.py HEAD~1
+
+      - name: Resoumettre le sitemap à Google Search Console
+        if: env.published == '1'
+        env:
+          GSC_SERVICE_ACCOUNT: ${{ secrets.GSC_SERVICE_ACCOUNT }}
+        run: |
+          pip install -q google-auth requests
+          python3 .github/scripts/gsc_sitemap.py

@@ -16,3 +16,9 @@ jobs:
         run: sleep 120
       - name: Envoyer à IndexNow
         run: python3 .github/scripts/indexnow.py ${{ github.event.before }}
+      - name: Resoumettre le sitemap à Google Search Console
+        env:
+          GSC_SERVICE_ACCOUNT: ${{ secrets.GSC_SERVICE_ACCOUNT }}
+        run: |
+          pip install -q google-auth requests
+          python3 .github/scripts/gsc_sitemap.py
