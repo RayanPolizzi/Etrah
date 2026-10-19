@@ -1094,6 +1094,9 @@ img,svg{max-width:100%;height:auto;image-rendering:-webkit-optimize-contrast}
 .rs-frame-outer{display:none}
 .rs-frame-inner{display:none}
 @media(max-width:960px){.rs-inner{grid-template-columns:1fr;gap:40px}#rayan-section{padding:72px 20px}.rs-photo-wrap{max-width:300px}.rs-photo{min-height:360px}}
+
+.btn-primary,.of-btn,.f-submit{background:#b8922a;border-color:#b8922a}
+.nav-cta:hover{background:#b8922a;border-color:#b8922a}
 </style>
 </head>
 <body>
@@ -1226,7 +1229,7 @@ img,svg{max-width:100%;height:auto;image-rendering:-webkit-optimize-contrast}
     <div class="rs-photo-wrap rv" style="transition-delay:.2s">
       <div class="rs-frame-outer"></div>
       <div class="rs-frame-inner"></div>
-      <img loading="lazy" decoding="async" class="rs-photo" src="rayan-polizzi.webp" width="800" height="1202" alt="Rayan Polizzi, fondateur d'Etrah, créateur de sites de mariage à Nice">
+      <img loading="lazy" decoding="async" class="rs-photo" src="rayan-polizzi-320.webp" srcset="rayan-polizzi-320.webp 320w, rayan-polizzi-640.webp 640w" sizes="(max-width: 960px) 300px, 340px" width="320" height="481" alt="Rayan Polizzi, fondateur d'Etrah, créateur de sites de mariage à Nice">
     </div>
 
   </div>
@@ -1927,6 +1930,41 @@ function resetForm(){
       if(errDiv) errDiv.style.display = 'block';
     }
   });
+})();
+/* ── Typewriter hero ── */
+(function(){
+  var el = document.getElementById('typed-em');
+  var cur = document.getElementById('typed-cursor');
+  if(!el||!cur) return;
+  var full = el.textContent;
+  el.textContent = '';
+  var TYPE_SPEED = 68;
+  var ERASE_SPEED = 38;
+  var PAUSE = 4000;
+
+  function type(cb){
+    var i = 0;
+    function t(){ if(i<full.length){ el.textContent+=full[i++]; setTimeout(t,TYPE_SPEED); } else cb(); }
+    t();
+  }
+  function erase(cb){
+    function e(){ if(el.textContent.length>0){ el.textContent=el.textContent.slice(0,-1); setTimeout(e,ERASE_SPEED); } else cb(); }
+    e();
+  }
+  function loop(){
+    type(function(){
+      setTimeout(function(){
+        erase(function(){
+          setTimeout(loop, 300);
+        });
+      }, PAUSE);
+    });
+  }
+
+  setTimeout(function(){
+    cur.style.visibility = '';
+    loop();
+  }, 1400);
 })();
 </script>
 
