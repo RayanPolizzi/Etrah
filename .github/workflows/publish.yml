@@ -14,6 +14,8 @@ jobs:
     steps:
       - name: Checkout du repo
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
 
       - name: Python 3.11
         uses: actions/setup-python@v5
@@ -33,5 +35,16 @@ jobs:
           git config user.name "Etrah Studio"
           git config user.email "studio@site-mariage.com"
           git add -A
-          git diff --staged --quiet || git commit -m "✦ Article publié automatiquement — $(date +'%Y-%m-%d')"
-          git push
+          if git diff --staged --quiet; then
+            echo "published=0" >> "$GITHUB_ENV"
+          else
+            git commit -m "✦ Article publié automatiquement — $(date +'%Y-%m-%d')"
+            git push
+            echo "published=1" >> "$GITHUB_ENV"
+          fi
+
+      - name: Signaler les nouvelles pages à IndexNow
+        if: env.published == '1'
+        run: |
+          sleep 120
+          python3 .github/scripts/indexnow.py HEAD~1
