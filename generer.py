@@ -61,8 +61,26 @@ def parse_inline(t):
     t = re.sub(r"\*([^*]+)\*",     r"<em>\1</em>", t)
     return t
 
+def url_ok(url):
+    """True si l'image répond (ou si le réseau est indisponible : on ne bloque pas pour ça)."""
+    import urllib.request, urllib.error
+    try:
+        req = urllib.request.Request(url, method="HEAD", headers={"User-Agent": "Mozilla/5.0 Etrah"})
+        with urllib.request.urlopen(req, timeout=10) as r:
+            return r.status < 400
+    except urllib.error.HTTPError as e:
+        return e.code < 400
+    except Exception:
+        return True
+
 def pick_hero(slug):
+    """Image de couverture choisie selon le slug ; passe à la suivante si elle ne répond plus."""
     idx = int(hashlib.md5(slug.encode()).hexdigest(), 16) % len(HERO_IMAGES)
+    for k in range(len(HERO_IMAGES)):
+        url = HERO_IMAGES[(idx + k) % len(HERO_IMAGES)]
+        if url_ok(url):
+            return url
+        print(f"   ⚠ image indisponible, suivante : {url}")
     return HERO_IMAGES[idx]
 
 # ── GÉNÉRATION DU CONTENU VIA CLAUDE ─────────────────────────────────────────
@@ -532,13 +550,17 @@ def load_articles():
     return arts
 
 def words(t):
+    """Racines des mots significatifs (6 premières lettres : « photos »/« photographe » se rejoignent)."""
     t = slugify(t).replace("-", " ")
-    return {w for w in t.split() if len(w) > 2 and w not in STOP}
+    return {w[:6] for w in t.split() if len(w) > 2 and w not in STOP}
 
 def most_related(title, arts, n=3, exclude=None):
+    """Articles les plus proches par le sujet ; à égalité, les plus récents d'abord."""
     w = words(title)
-    scored = sorted(arts, key=lambda a: (-len(w & words(a["title"] + " " + a["desc"])), a["date"]), reverse=False)
-    return [a for a in scored if a["file"] != exclude][:n]
+    pool = [a for a in arts if a["file"] != exclude]
+    pool.sort(key=lambda a: a["date"], reverse=True)          # récents d'abord…
+    pool.sort(key=lambda a: -len(w & words(a["title"] + " " + a["desc"])))  # …puis par proximité (tri stable)
+    return pool[:n]
 
 def month_fr(iso):
     try:
@@ -568,8 +590,8 @@ def add_backlinks(new_file, new_title, rel, max_links=3):
             break
         p = BASE_DIR / a["file"]
         c = p.read_text(encoding="utf-8")
-        if f'href="{new_file}"' in c:
-            continue
+        if f'href="{new_file}"' in c or c.count('class="see-also"') >= 4:
+            continue   # déjà lié, ou assez de liens « À lire aussi » sur cet article
         line = f'<p class="see-also">À lire aussi : <a href="{new_file}">{html.escape(new_title)}</a></p>\n'
         if '<div class="article-form-cta">' in c:
             c = c.replace('<div class="article-form-cta">', line + '  <div class="article-form-cta">', 1)
@@ -809,8 +831,10 @@ def main():
             print(f"   ⚠ index : {e}")
 
         # Maillage : liens depuis les anciens articles proches + hub + llms.txt
+        touched = []
         try:
-            touched = add_backlinks(f"{slug}.html", title, rel)
+            # liens retour : on parcourt plus de candidats que nécessaire (certains peuvent être déjà pleins)
+            touched = add_backlinks(f"{slug}.html", title, most_related(title, arts, 6))
             build_magazine(load_articles())
             update_llms(f"{slug}.html", title)
             touch_sitemap(touched + ["index.html", "magazine.html"], TODAY)
@@ -820,6 +844,14 @@ def main():
 
         if dry_run:
             print(f"   ✓ TEST RÉUSSI — article de test : {out}")
+            out_dir = next((a.split("=", 1)[1] for a in sys.argv if a.startswith("--out=")), "")
+            if out_dir:
+                import shutil
+                dst = Path(out_dir); dst.mkdir(parents=True, exist_ok=True)
+                for f in [out.name, "sitemap.xml", "magazine.html", "index.html", "llms.txt"] + touched:
+                    if (BASE_DIR / f).exists():
+                        shutil.copy(BASE_DIR / f, dst / f)
+                (dst / "article.json").write_text(json.dumps(data, ensure_ascii=False, indent=2), encoding="utf-8")
 
     if failed:
         sys.exit(f"❌ {failed} article(s) non générés")

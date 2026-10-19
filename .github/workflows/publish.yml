@@ -43,7 +43,36 @@ jobs:
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
         run: |
           TITLE=$(python3 -c "import json;q=json.load(open('queue.json'));print(next(a['title'] for a in q if a.get('status')=='pending'))")
-          python generer.py --dry-run "$TITLE"
+          python generer.py --dry-run --out=test-output "$TITLE"
+
+      - name: Vérifier les images de couverture et les pages du site
+        if: inputs.test
+        run: |
+          python3 - <<'EOF'
+          import re, sys, urllib.request, urllib.error
+          sys.path.insert(0, ".")
+          from generer import HERO_IMAGES
+          pages = sorted(set(re.findall(r"<loc>([^<]+)</loc>", open("sitemap.xml").read())))
+          bad = []
+          for u in HERO_IMAGES + pages:
+              try:
+                  r = urllib.request.urlopen(urllib.request.Request(u, headers={"User-Agent": "Mozilla/5.0"}), timeout=20)
+                  code = r.status
+              except urllib.error.HTTPError as e:
+                  code = e.code
+              print(code, u)
+              if code >= 400: bad.append(u)
+          sys.exit(f"{len(bad)} URL en erreur : {bad}" if bad else 0)
+          EOF
+
+      - name: Joindre l'article de test (téléchargeable depuis l'exécution)
+        if: inputs.test && always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: article-de-test
+          path: test-output/
+          if-no-files-found: ignore
+          retention-days: 7
 
       - name: Publier l'article de la semaine
         id: pub
@@ -55,6 +84,8 @@ jobs:
 
       - name: Commit et push
         if: ${{ !inputs.test }}
+        env:
+          MSG: ${{ steps.pub.outputs.message }}
         run: |
           git config user.name "Etrah Studio"
           git config user.email "studio@site-mariage.com"
@@ -62,7 +93,6 @@ jobs:
           if git diff --staged --quiet; then
             echo "Rien à enregistrer."
           else
-            MSG="${{ steps.pub.outputs.message }}"
             git commit -m "✦ ${MSG:-Mise à jour automatique} — $(date +'%Y-%m-%d')"
             git pull --rebase -q origin main
             git push
