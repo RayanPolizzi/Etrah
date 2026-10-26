@@ -1,7 +1,7 @@
-# Pages légales sans .html
-/mentions-legales    /mentions-legales.html    200
-/politique-confidentialite    /politique-confidentialite.html    200
-/cgv    /cgv.html    200
+# Pages légales sans .html (redirection permanente vers l'URL canonique, pas de duplication)
+/mentions-legales    /mentions-legales.html    301
+/politique-confidentialite    /politique-confidentialite.html    301
+/cgv    /cgv.html    301
 
 # Articles en double fusionnés (301 permanentes)
 /creer-site-mariage-change-organisation.html    /pourquoi-creer-site-mariage-change-organisation.html    301
