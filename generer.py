@@ -31,7 +31,24 @@ HERO_IMAGES = [
     "https://images.unsplash.com/photo-1511285560929-80b456fea0bc?w=1400&q=85&auto=format&fit=crop",
     "https://images.unsplash.com/photo-1465495976277-4387d4b0b4c6?w=1400&q=85&auto=format&fit=crop",
     "https://images.unsplash.com/photo-1491895200222-0fc4a4c35e18?w=1400&q=85&auto=format&fit=crop",
+    "https://images.unsplash.com/photo-1519225421980-715cb0215aed?w=1400&q=85&auto=format&fit=crop",
+    "https://images.unsplash.com/photo-1502635385003-ee1e6a1a742d?w=1400&q=85&auto=format&fit=crop",
+    "https://images.unsplash.com/photo-1656104717095-9d062b0d4e8d?w=1400&q=85&auto=format&fit=crop",
+    "https://images.unsplash.com/photo-1780901049024-8e504f6024a8?w=1400&q=85&auto=format&fit=crop",
+    "https://images.unsplash.com/photo-1621801306185-8c0ccf9c8eb8?w=1400&q=85&auto=format&fit=crop",
+    "https://images.unsplash.com/photo-1632610992723-82d7c212f6d7?w=1400&q=85&auto=format&fit=crop",
+    "https://images.unsplash.com/photo-1769374072486-a6c0511b7dee?w=1400&q=85&auto=format&fit=crop",
+    "https://images.unsplash.com/photo-1515934751635-c81c6bc9a2d8?w=1400&q=85&auto=format&fit=crop",
+    "https://images.unsplash.com/photo-1622398925373-3f91b1e275f5?w=1400&q=85&auto=format&fit=crop",
+    "https://images.unsplash.com/photo-1561593367-66c79c2294e6?w=1400&q=85&auto=format&fit=crop",
+    "https://images.unsplash.com/photo-1632528011905-54e2464961f4?w=1400&q=85&auto=format&fit=crop",
+    "https://images.unsplash.com/photo-1721176487015-5408ae0e9bc2?w=1400&q=85&auto=format&fit=crop",
+    "https://images.unsplash.com/photo-1509316554658-04f9287cdb78?w=1400&q=85&auto=format&fit=crop",
+    "https://images.unsplash.com/photo-1522058171200-e61f77c7353d?w=1400&q=85&auto=format&fit=crop",
+    "https://images.unsplash.com/photo-1520854221256-17451cc331bf?w=1400&q=85&auto=format&fit=crop",
+    "https://images.unsplash.com/photo-1544592732-83bbbfc46783?w=1400&q=85&auto=format&fit=crop",
 ]
+RECENT_AVOID = 5  # n'autorise pas une image déjà utilisée par les N derniers articles publiés
 
 MODEL = os.environ.get("ETRAH_MODEL", "claude-sonnet-5-5")
 MAX_TOKENS = 8000
@@ -73,15 +90,40 @@ def url_ok(url):
     except Exception:
         return True
 
+def recently_used_heroes(n=RECENT_AVOID):
+    """ID (sans paramètres) des images de couverture déjà utilisées par les n derniers articles publiés."""
+    try:
+        q = json.loads((BASE_DIR / "queue.json").read_text(encoding="utf-8"))
+    except Exception:
+        return set()
+    done = sorted(
+        (a for a in q if a.get("status") == "done" and a.get("published")),
+        key=lambda a: a["published"], reverse=True,
+    )[:n]
+    used = set()
+    for a in done:
+        slug = slugify(a["title"]) + ".html"
+        f = BASE_DIR / slug
+        if not f.exists():
+            continue
+        m = re.search(r'og:image" content="https://images\.unsplash\.com/photo-([a-f0-9-]+)\?', f.read_text(encoding="utf-8"))
+        if m:
+            used.add(m.group(1))
+    return used
+
 def pick_hero(slug):
-    """Image de couverture choisie selon le slug ; passe à la suivante si elle ne répond plus."""
-    idx = int(hashlib.md5(slug.encode()).hexdigest(), 16) % len(HERO_IMAGES)
-    for k in range(len(HERO_IMAGES)):
-        url = HERO_IMAGES[(idx + k) % len(HERO_IMAGES)]
+    """Image de couverture : exclut d'abord celles des derniers articles publiés pour éviter
+    les répétitions rapprochées, puis choisit selon le slug parmi ce qui reste ; passe à la
+    suivante si l'image ne répond plus."""
+    avoid = recently_used_heroes()
+    pool = [u for u in HERO_IMAGES if u.split("photo-")[1].split("?")[0] not in avoid] or HERO_IMAGES
+    idx = int(hashlib.md5(slug.encode()).hexdigest(), 16) % len(pool)
+    for k in range(len(pool)):
+        url = pool[(idx + k) % len(pool)]
         if url_ok(url):
             return url
         print(f"   ⚠ image indisponible, suivante : {url}")
-    return HERO_IMAGES[idx]
+    return pool[idx]
 
 # ── GÉNÉRATION DU CONTENU VIA CLAUDE ─────────────────────────────────────────
 SYSTEM = (
