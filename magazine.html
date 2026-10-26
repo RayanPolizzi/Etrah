@@ -64,7 +64,12 @@ nav{position:fixed;top:0;left:0;right:0;z-index:500;padding:20px 52px;display:fl
 .btn-primary:hover{background:var(--gold2);border-color:var(--gold2);transform:translateY(-2px)}
 
 @media(max-width:1024px){.mag-grid{grid-template-columns:repeat(2,1fr)}}
-@media(max-width:768px){.mag-head{padding:130px 20px 16px}.mag-main{padding:44px 20px 80px}.mag-grid{grid-template-columns:1fr;gap:20px}.mag-body{padding:24px 20px}.mag-title{font-size:20px}}
+@media(max-width:768px){
+  nav{padding:16px 20px}
+  .nav-logo{font-size:28px}
+  .mag-head{padding:110px 20px 16px}.mag-main{padding:44px 20px 80px}.mag-grid{grid-template-columns:1fr;gap:20px}.mag-body{padding:24px 20px}.mag-title{font-size:20px}
+  .mag-filters{margin-bottom:36px}
+}
 
 /* FOOTER */
 footer{background:var(--white);position:relative;overflow:hidden;border-top:1px solid rgba(184,146,42,.12)}
