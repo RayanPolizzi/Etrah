@@ -585,11 +585,37 @@ def load_articles():
             if d.get("@type") == "Article":
                 desc = re.search(r'<meta name="description" content="([^"]*)"', c)
                 img = re.search(r'<meta property="og:image" content="([^"]*)"', c)
-                arts.append({"file": f.name, "title": html.unescape(d.get("headline", f.stem)),
+                alt = re.search(r'<meta property="og:image:alt" content="([^"]*)"', c)
+                title = html.unescape(d.get("headline", f.stem))
+                arts.append({"file": f.name, "title": title,
                              "desc": html.unescape(desc.group(1)) if desc else "",
-                             "date": d.get("datePublished", ""), "img": img.group(1) if img else HERO_IMAGES[0]})
+                             "date": d.get("datePublished", ""), "img": img.group(1) if img else HERO_IMAGES[0],
+                             "alt": html.unescape(alt.group(1)) if alt else title,
+                             "cat": categorize(title)})
                 break
     return arts
+
+# ── CATÉGORIES DU MAGAZINE (filtres) ──────────────────────────────────────────
+# Ordre important : la première règle qui correspond l'emporte.
+CATEGORY_RULES = [
+    ("budget",          "Budget",            r"budget|co[uû]te|prix"),
+    ("rsvp",            "RSVP",              r"\brsvp\b"),
+    ("erreurs",         "Erreurs à éviter",  r"erreur"),
+    ("comparatif",      "Comparatif",        r"gratuit|sur-mesure|comparatif|papier|diff[eé]rence|num[eé]rique"),
+    ("inspirations",    "Inspirations",      r"exemple|inspiration|id[eé]e"),
+    ("faire-part",      "Faire-part",        r"faire-part|save the date|whatsapp"),
+    ("timing",          "Timing",            r"quand|calendrier|combien de temps|temps faut-il"),
+    ("contenu",         "Contenu",           r"mettre|information|mod[eè]le"),
+    ("personnalisation","Personnalisation",  r"personnalis|biling|photo|[eé]l[eé]gant|annoncer"),
+    ("organisation",    "Organisation",      r"pourquoi|organisation|r[eé]seaux sociaux|hiver|provence|saison"),
+]
+def categorize(title):
+    """Déduit une catégorie de filtre (slug, libellé) à partir du titre de l'article."""
+    t = title.lower()
+    for slug, label, pattern in CATEGORY_RULES:
+        if re.search(pattern, t):
+            return (slug, label)
+    return ("conseils", "Conseils")
 
 def words(t):
     """Racines des mots significatifs (6 premières lettres : « photos »/« photographe » se rejoignent)."""
@@ -645,55 +671,234 @@ def add_backlinks(new_file, new_title, rel, max_links=3):
         done.append(a["file"])
     return done
 
+MAGAZINE_STYLE = """
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--ink:#1a1612;--ink2:#2d2620;--ink3:#6b5e52;--cream:#f5f0e8;--cream2:#ede8dc;--gold:#7f6218;--gold2:#d4aa40;--gold-l:rgba(184,146,42,.18);--white:#fdfaf5}
+html{scroll-behavior:smooth;-webkit-font-smoothing:antialiased}
+body{background:var(--cream);color:var(--ink);font-family:'Cormorant Garamond',serif;overflow-x:hidden}
+a{color:inherit}
+nav{position:fixed;top:0;left:0;right:0;z-index:500;padding:20px 52px;display:flex;align-items:center;justify-content:space-between;background:rgba(253,250,245,.96);backdrop-filter:blur(20px);border-bottom:1px solid rgba(184,146,42,.12)}
+.nav-logo{font-family:'Pinyon Script',cursive;font-size:34px;color:var(--ink);text-decoration:none;line-height:1}
+.nav-back{font-family:'Josefin Sans',sans-serif;font-weight:200;font-size:8px;letter-spacing:5px;text-transform:uppercase;color:var(--ink3);text-decoration:none;transition:color .3s}
+.nav-back:hover{color:var(--gold)}
+.mag-head{max-width:760px;margin:0 auto;padding:150px 24px 20px;text-align:center}
+.s-ey{font-family:'Josefin Sans',sans-serif;font-weight:400;font-size:12px;letter-spacing:6px;text-transform:uppercase;color:var(--gold);text-align:center;margin-bottom:14px}
+.s-ti{font-family:'Cormorant Garamond',serif;font-style:italic;font-weight:300;font-size:clamp(32px,5vw,54px);color:var(--ink);text-align:center;line-height:1.1;margin-bottom:18px;text-shadow:0 1px 0 rgba(0,0,0,.04)}
+.s-orn{display:flex;align-items:center;justify-content:center;gap:12px;margin-bottom:24px}
+.so-l{width:40px;height:1px;background:linear-gradient(to right,transparent,var(--gold));opacity:.9}
+.so-d{width:7px;height:7px;border:1.5px solid var(--gold);transform:rotate(45deg)}
+.so-l.r{background:linear-gradient(to left,transparent,var(--gold))}
+.mag-sub{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:18px;color:var(--ink3);line-height:1.7;max-width:620px;margin:0 auto}
+.mag-filters{display:flex;flex-wrap:wrap;justify-content:center;gap:10px;max-width:980px;margin:0 auto 52px;padding:0 24px}
+.mag-filter{font-family:'Josefin Sans',sans-serif;font-weight:400;font-size:10px;letter-spacing:3px;text-transform:uppercase;color:var(--ink2);background:var(--white);border:1px solid rgba(184,146,42,.3);padding:11px 20px;cursor:pointer;transition:all .3s;line-height:1}
+.mag-filter:hover{border-color:var(--gold);color:var(--gold)}
+.mag-filter.active{background:var(--gold);border-color:var(--gold);color:var(--white)}
+.mag-main{padding:0 60px 120px;max-width:1240px;margin:0 auto}
+.mag-card.hidden{display:none}
+.mag-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:32px}
+.mag-card{background:var(--white);border:1px solid rgba(184,146,42,.12);overflow:hidden;transition:transform .4s ease,box-shadow .4s ease;display:flex;flex-direction:column}
+.mag-card:hover{transform:translateY(-6px);box-shadow:0 20px 60px rgba(0,0,0,.08)}
+.mag-card a{display:flex;flex-direction:column;flex:1;text-decoration:none;color:inherit}
+.mag-img{width:100%;aspect-ratio:16/9;overflow:hidden;position:relative;background:var(--cream2)}
+.mag-img img{width:100%;height:100%;object-fit:cover;transition:transform .6s ease;display:block}
+.mag-card:hover .mag-img img{transform:scale(1.04)}
+.mag-body{padding:30px 26px;display:flex;flex-direction:column;flex:1}
+.mag-cat{font-family:'Josefin Sans',sans-serif;font-weight:500;font-size:11px;letter-spacing:4px;text-transform:uppercase;color:var(--gold);margin-bottom:12px}
+.mag-title{font-family:'Cormorant Garamond',serif;font-weight:700;font-size:23px;color:var(--ink);line-height:1.25;margin-bottom:12px}
+.mag-excerpt{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:15px;color:var(--ink3);line-height:1.7;margin-bottom:18px;flex:1}
+.mag-footer{display:flex;align-items:center;justify-content:space-between;padding-top:16px;border-top:1px solid rgba(184,146,42,.1)}
+.mag-date{font-family:'Josefin Sans',sans-serif;font-weight:500;font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--ink)}
+.mag-read{font-family:'Josefin Sans',sans-serif;font-weight:600;font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--gold);transition:gap .3s}
+.mag-card:hover .mag-read{color:var(--gold2)}
+.mag-cta{text-align:center;padding:60px 24px 100px}
+.mag-cta p{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:20px;color:var(--ink3);margin-bottom:28px}
+.btn-primary{font-family:'Josefin Sans',sans-serif;font-weight:300;font-size:10px;letter-spacing:5px;text-transform:uppercase;color:var(--white);background:var(--gold);border:1px solid var(--gold);padding:19px 48px;text-decoration:none;transition:background .35s,border-color .35s,transform .2s;display:inline-block}
+.btn-primary:hover{background:var(--gold2);border-color:var(--gold2);transform:translateY(-2px)}
+@media(max-width:1024px){.mag-grid{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:768px){
+  nav{padding:16px 20px}
+  .nav-logo{font-size:28px}
+  .mag-head{padding:110px 20px 16px}.mag-main{padding:44px 20px 80px}.mag-grid{grid-template-columns:1fr;gap:20px}.mag-body{padding:24px 20px}.mag-title{font-size:20px}
+  .mag-filters{margin-bottom:36px}
+}
+footer{background:var(--white);position:relative;overflow:hidden;border-top:1px solid rgba(184,146,42,.12)}
+footer::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(to right,transparent,rgba(184,146,42,.35) 30%,rgba(184,146,42,.35) 70%,transparent)}
+footer::after{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 40% 50% at 10% 50%,rgba(184,146,42,.04) 0%,transparent 60%);pointer-events:none}
+.ft-top{display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:40px;padding:72px 72px 56px;position:relative;z-index:1}
+.ft-brand{}
+.ft-logo-text{font-family:'Pinyon Script',cursive;font-size:52px;color:var(--ink);line-height:1;display:block;margin-bottom:20px}
+.ft-orn{display:flex;align-items:center;gap:8px;margin-bottom:20px}
+.ft-orn-l{width:28px;height:1px;background:linear-gradient(to right,transparent,var(--gold))}
+.ft-orn-d{width:5px;height:5px;border:1px solid var(--gold);transform:rotate(45deg);flex-shrink:0}
+.ft-orn-r{width:28px;height:1px;background:linear-gradient(to left,transparent,var(--gold))}
+.ft-devise{font-family:'Cormorant Garamond',serif;font-style:italic;font-weight:300;font-size:17px;color:var(--ink2);line-height:1.7;margin-bottom:0;padding-left:16px;border-left:2px solid rgba(184,146,42,.35)}
+.ft-col-title{font-family:'Josefin Sans',sans-serif;font-weight:300;font-size:9px;letter-spacing:5px;text-transform:uppercase;color:var(--ink);margin-bottom:28px;padding-bottom:14px;border-bottom:1px solid rgba(184,146,42,.18)}
+.ft-links{display:flex;flex-direction:column;gap:12px}
+.ft-link{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:16px;color:var(--ink3);text-decoration:none;transition:color .3s;display:inline-block}
+.ft-link:hover{color:var(--gold)}
+.ft-contact-item{margin-bottom:16px}
+.ft-contact-label{font-family:'Josefin Sans',sans-serif;font-weight:100;font-size:7px;letter-spacing:4px;text-transform:uppercase;color:var(--gold);margin-bottom:4px}
+.ft-contact-val{font-family:'Cormorant Garamond',serif;font-size:16px;color:var(--ink3);text-decoration:none;transition:color .3s;display:block}
+.ft-contact-val:hover{color:var(--gold)}
+.ft-social{display:flex;gap:12px;margin-top:4px}
+.ft-social-btn{width:38px;height:38px;border:1px solid rgba(184,146,42,.25);display:flex;align-items:center;justify-content:center;text-decoration:none;transition:all .3s;color:var(--ink3)}
+.ft-social-btn:hover{border-color:var(--gold);color:var(--gold);background:rgba(184,146,42,.07)}
+.ft-social-btn svg{width:15px;height:15px;fill:currentColor}
+.ft-social-desc{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:13px;color:var(--ink3);line-height:1.7;margin-top:16px;max-width:200px;opacity:.7}
+.ft-bottom{border-top:1px solid rgba(184,146,42,.12);padding:24px 72px;display:flex;align-items:center;justify-content:space-between;position:relative;z-index:1;flex-wrap:wrap;gap:12px}
+.ft-copy{font-family:'Josefin Sans',sans-serif;font-weight:100;font-size:7px;letter-spacing:3px;text-transform:uppercase;color:var(--ink);opacity:.85}
+.ft-legal{display:flex;gap:24px}
+.ft-legal a{font-family:'Josefin Sans',sans-serif;font-weight:100;font-size:7px;letter-spacing:3px;text-transform:uppercase;color:var(--ink);opacity:.75;text-decoration:none;transition:opacity .3s,color .3s}
+.ft-legal a:hover{opacity:1;color:var(--gold)}
+@media(max-width:900px){.ft-top{grid-template-columns:1fr 1fr;gap:36px;padding:52px 32px 44px}}
+@media(max-width:600px){.ft-top{grid-template-columns:1fr;gap:36px;padding:44px 20px 36px}.ft-logo-text{font-size:40px}.ft-devise{font-size:15px}.ft-bottom{padding:20px;flex-direction:column;align-items:flex-start;gap:8px}.ft-legal{flex-wrap:wrap;gap:14px}}
+"""
+
+MAGAZINE_FOOTER = """<footer>
+  <div class="ft-top">
+    <div class="ft-brand">
+      <span class="ft-logo-text">Etrah</span>
+      <div class="ft-orn"><div class="ft-orn-l"></div><div class="ft-orn-d"></div><div class="ft-orn-r"></div></div>
+      <p class="ft-devise">Chaque amour mérite<br>sa propre invitation.</p>
+      <p class="ft-devise" style="margin-top:10px;font-size:13px">Création de sites de mariage et faire-part digitaux sur-mesure à Nice, sur la Côte d'Azur et partout en France.</p>
+    </div>
+    <div>
+      <div class="ft-col-title">Pages</div>
+      <div class="ft-links">
+        <a class="ft-link" href="/#process">Notre approche</a>
+        <a class="ft-link" href="/#portfolio">Nos réalisations</a>
+        <a class="ft-link" href="/#offres">L'Écrin · 500€</a>
+        <a class="ft-link" href="/#temoignage">Témoignages</a>
+        <a class="ft-link" href="/#faq">Questions fréquentes</a>
+        <a class="ft-link" href="/#contact">Nous contacter</a>
+      </div>
+    </div>
+    <div>
+      <div class="ft-col-title">Nous joindre</div>
+      <div class="ft-contact-item"><div class="ft-contact-label">Email</div><a class="ft-contact-val" href="mailto:contact.etrah@gmail.com">contact.etrah@gmail.com</a></div>
+      <div class="ft-contact-item"><div class="ft-contact-label">WhatsApp</div><a class="ft-contact-val" href="https://wa.me/33658435326">06 58 43 53 26</a></div>
+      <div class="ft-contact-item"><div class="ft-contact-label">Localisation</div><span class="ft-contact-val" style="cursor:default">Nice, Alpes-Maritimes</span></div>
+      <div class="ft-contact-item"><div class="ft-contact-label">Livraison</div><span class="ft-contact-val" style="cursor:default">10 à 14 jours</span></div>
+    </div>
+    <div>
+      <div class="ft-col-title">Suivez-nous</div>
+      <div class="ft-social">
+        <a class="ft-social-btn" href="https://instagram.com/etrah.mariage" target="_blank" rel="noopener" title="Instagram" aria-label="Instagram Etrah"><svg viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg></a>
+        <a class="ft-social-btn" href="mailto:contact.etrah@gmail.com" title="Email" aria-label="Envoyer un email à Etrah"><svg viewBox="0 0 24 24"><path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg></a>
+        <a class="ft-social-btn" href="https://wa.me/33658435326" target="_blank" rel="noopener" title="WhatsApp" aria-label="WhatsApp Etrah"><svg viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg></a>
+      </div>
+      <p class="ft-social-desc">Retrouvez nos réalisations sur Instagram et inspirez-vous pour votre mariage.</p>
+    </div>
+  </div>
+  <div class="ft-bottom">
+    <span class="ft-copy">© 2026 Etrah · Tous droits réservés</span>
+    <div class="ft-legal">
+      <a href="mentions-legales.html">Mentions légales</a>
+      <a href="politique-confidentialite.html">Politique de confidentialité</a>
+      <a href="cgv.html">CGV</a>
+    </div>
+  </div>
+</footer>"""
+
+MAGAZINE_SCRIPT = """<script>
+(function(){
+  var filters=document.querySelectorAll('#magFilters .mag-filter');
+  var cards=document.querySelectorAll('#magGrid .mag-card');
+  filters.forEach(function(btn){
+    btn.addEventListener('click',function(){
+      filters.forEach(function(b){b.classList.remove('active')});
+      btn.classList.add('active');
+      var f=btn.getAttribute('data-filter');
+      cards.forEach(function(c){
+        c.classList.toggle('hidden', f!=='tous' && c.getAttribute('data-cat')!==f);
+      });
+    });
+  });
+})();
+</script>"""
+
 def build_magazine(arts):
-    """Page hub listant tous les articles (évite les articles orphelins)."""
+    """Page hub listant tous les articles, avec filtres par thématique (design aligné sur la home)."""
     arts = sorted(arts, key=lambda a: a["date"], reverse=True)
-    items = ""
+
+    # Filtres : une entrée par catégorie présente, dans l'ordre de CATEGORY_RULES puis "Conseils"
+    present = {a["cat"] for a in arts}
+    ordered_cats = [(s, l) for s, l, _ in CATEGORY_RULES if (s, l) in present]
+    if ("conseils", "Conseils") in present:
+        ordered_cats.append(("conseils", "Conseils"))
+    filter_btns = '  <button class="mag-filter active" data-filter="tous">Tous les articles</button>\n'
+    filter_btns += "\n".join(f'  <button class="mag-filter" data-filter="{slug}">{html.escape(label)}</button>' for slug, label in ordered_cats)
+
+    cards = ""
     for a in arts:
-        thumb = a["img"].replace("w=1400", "w=600")
-        items += (f'  <article class="mc"><a href="{a["file"]}">'
-                  f'<img src="{thumb}" alt="{html.escape(a["title"])}" loading="lazy" width="600" height="338">'
-                  f'<span class="md">{month_fr(a["date"])}</span><h2>{html.escape(a["title"])}</h2>'
-                  f'<p>{html.escape(a["desc"])}</p></a></article>\n')
+        thumb = a["img"].replace("w=1400", "w=800")
+        slug, label = a["cat"]
+        cards += f"""    <article class="mag-card" data-cat="{slug}">
+      <a href="{a['file']}">
+        <div class="mag-img"><img src="{thumb}" alt="{html.escape(a['alt'])}" loading="lazy" width="800" height="450"></div>
+        <div class="mag-body">
+          <p class="mag-cat">{html.escape(label)}</p>
+          <h2 class="mag-title">{html.escape(a['title'])}</h2>
+          <p class="mag-excerpt">{html.escape(a['desc'])}</p>
+          <div class="mag-footer"><span class="mag-date">{month_fr(a['date'])}</span><span class="mag-read">Lire →</span></div>
+        </div>
+      </a>
+    </article>
+
+"""
+
     ld = {"@context": "https://schema.org", "@type": "CollectionPage", "name": "Magazine Etrah",
           "url": f"{SITE_URL}/magazine.html",
           "mainEntity": {"@type": "ItemList", "itemListElement": [
               {"@type": "ListItem", "position": i + 1, "url": f"{SITE_URL}/{a['file']}", "name": a["title"]}
               for i, a in enumerate(arts)]}}
+
     page = f"""<!DOCTYPE html>
 <html lang="fr">
 <head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Magazine mariage : conseils pour votre site de mariage | Etrah</title>
+<title>Magazine mariage : conseils pour votre site | Etrah</title>
 <meta name="description" content="Tous les articles du magazine Etrah : organisation, budget, faire-part digital, RSVP et idées pour créer un site de mariage qui vous ressemble.">
 <link rel="canonical" href="{SITE_URL}/magazine.html">
-<meta property="og:url" content="{SITE_URL}/magazine.html"><meta property="og:title" content="Magazine mariage | Etrah"><meta property="og:image" content="{SITE_URL}/og-image.jpg">
-<link rel="icon" type="image/svg+xml" href="favicon.svg">
+<meta property="og:url" content="{SITE_URL}/magazine.html"><meta property="og:title" content="Magazine mariage | Etrah"><meta property="og:description" content="Tous les articles du magazine Etrah : organisation, budget, faire-part digital, RSVP et idées pour créer un site de mariage qui vous ressemble."><meta property="og:image" content="{SITE_URL}/og-image.jpg"><meta property="og:type" content="website"><meta property="og:locale" content="fr_FR"><meta property="og:site_name" content="Etrah">
+<link rel="icon" type="image/svg+xml" href="favicon.svg"><link rel="shortcut icon" href="favicon.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400;1,600&family=Josefin+Sans:wght@100;200;300;400&family=Pinyon+Script&display=swap"><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400;1,600&family=Josefin+Sans:wght@100;200;300;400&family=Pinyon+Script&display=swap" media="print" onload="this.media='all'"><noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400;1,600&family=Josefin+Sans:wght@100;200;300;400&family=Pinyon+Script&display=swap"></noscript>
 <script type="application/ld+json">{json.dumps(ld, ensure_ascii=False)}</script>
-<style>
-:root{{--ink:#1a1612;--ink3:#3a2e24;--gold:#7f6218;--white:#fdfaf5}}
-*{{box-sizing:border-box;margin:0;padding:0}}
-body{{background:var(--white);color:var(--ink);font-family:Georgia,'Times New Roman',serif}}
-nav{{display:flex;justify-content:space-between;align-items:center;padding:20px 40px;border-bottom:1px solid rgba(184,146,42,.2)}}
-nav a{{color:var(--ink);text-decoration:none}} .logo{{font-size:28px}} .back{{font-size:13px;letter-spacing:3px;text-transform:uppercase;color:var(--gold)}}
-header{{max-width:1100px;margin:0 auto;padding:56px 24px 24px;text-align:center}}
-h1{{font-weight:400;font-style:italic;font-size:clamp(32px,5vw,52px)}} header p{{color:var(--ink3);margin-top:14px;font-size:18px;line-height:1.6}}
-.grid{{max-width:1100px;margin:0 auto;padding:24px;display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:28px}}
-.mc a{{display:block;text-decoration:none;color:inherit}} .mc img{{width:100%;height:auto;aspect-ratio:16/9;object-fit:cover;display:block}}
-.md{{display:block;margin-top:14px;font-size:12px;letter-spacing:3px;text-transform:uppercase;color:var(--gold)}}
-.mc h2{{font-weight:400;font-size:22px;margin:8px 0;line-height:1.3}} .mc p{{color:var(--ink3);line-height:1.6;font-size:16px}}
-.cta{{text-align:center;padding:56px 24px}} .cta a{{display:inline-block;background:#b8922a;color:#fff;padding:16px 36px;text-decoration:none;letter-spacing:3px;text-transform:uppercase;font-size:13px}}
-footer{{text-align:center;padding:24px;font-size:13px;color:var(--ink3)}} footer a{{color:var(--ink3);margin:0 8px}}
-</style>
+<style>{MAGAZINE_STYLE}</style>
 </head>
 <body>
-<nav><a class="logo" href="/">Etrah</a><a class="back" href="/">← Accueil</a></nav>
-<header><h1>Le magazine du site de mariage</h1>
-<p>Conseils d'organisation, budget, faire-part digital et RSVP : tout pour préparer un site de mariage qui vous ressemble.</p></header>
-<main class="grid">
-{items}</main>
-<div class="cta"><a href="/#contact">Démarrer mon projet</a></div>
-<footer><a href="mentions-legales.html">Mentions légales</a><a href="politique-confidentialite.html">Confidentialité</a><a href="cgv.html">CGV</a></footer>
+
+<nav>
+  <a class="nav-logo" href="/">Etrah</a>
+  <a class="nav-back" href="/">← Retour au site</a>
+</nav>
+
+<header class="mag-head">
+  <p class="s-ey">Inspirations &amp; Conseils</p>
+  <h1 class="s-ti">Le <strong>magazine</strong> Etrah</h1>
+  <div class="s-orn"><div class="so-l"></div><div class="so-d"></div><div class="so-l r"></div></div>
+  <p class="mag-sub">Organisation, budget, faire-part digital et RSVP : tous nos conseils pour préparer un site de mariage qui vous ressemble.</p>
+</header>
+
+<div class="mag-filters" id="magFilters">
+{filter_btns}
+</div>
+
+<main class="mag-main">
+  <div class="mag-grid" id="magGrid">
+
+{cards}  </div>
+
+  <div class="mag-cta">
+    <p>Envie d'un site de mariage qui vous ressemble vraiment ?</p>
+    <a class="btn-primary" href="/#contact">Démarrer mon projet</a>
+  </div>
+</main>
+
+{MAGAZINE_FOOTER}
+
+{MAGAZINE_SCRIPT}
+
 </body>
 </html>
 """
@@ -733,8 +938,9 @@ def update_index(title, slug, category, date_fr, hero_url, excerpt):
       </div>
     </article>"""
 
-    # Extraire les articles existants dans la grid
-    grid_m = re.search(r'(<div class="blog-grid">)(.*?)(</div>\s*</section>)', c, re.DOTALL)
+    # Extraire les articles existants dans la grid (le marqueur /blog-grid borne précisément
+    # la zone remplacée, pour ne jamais toucher au bouton "Tous les articles" qui suit)
+    grid_m = re.search(r'(<div class="blog-grid">)(.*?)(</div>\s*<!-- /blog-grid -->)', c, re.DOTALL)
     if not grid_m:
         # Fallback simple si structure non trouvée
         marker = '<div class="blog-grid">'
