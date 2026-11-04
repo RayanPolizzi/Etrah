@@ -4,13 +4,13 @@
   <!-- Page principale -->
   <url>
     <loc>https://www.site-mariage.com/</loc>
-    <lastmod>2026-11-02</lastmod>
+    <lastmod>2026-11-04</lastmod>
   </url>
 
   <!-- Articles du magazine -->
   <url>
     <loc>https://www.site-mariage.com/magazine.html</loc>
-    <lastmod>2026-11-02</lastmod>
+    <lastmod>2026-11-04</lastmod>
   </url>
   <url>
     <loc>https://www.site-mariage.com/pourquoi-creer-site-mariage-change-organisation.html</loc>
@@ -22,7 +22,7 @@
   </url>
   <url>
     <loc>https://www.site-mariage.com/quand-creer-site-mariage.html</loc>
-    <lastmod>2026-10-30</lastmod>
+    <lastmod>2026-11-04</lastmod>
   </url>
   <url>
     <loc>https://www.site-mariage.com/site-mariage-ou-faire-part-papier.html</loc>
@@ -66,12 +66,17 @@
 
   <url>
     <loc>https://www.site-mariage.com/combien-de-temps-creer-site-de-mariage.html</loc>
-    <lastmod>2026-11-02</lastmod>
+    <lastmod>2026-11-04</lastmod>
   </url>
 
   <url>
     <loc>https://www.site-mariage.com/site-de-mariage-ou-faire-part-numerique.html</loc>
-    <lastmod>2026-11-02</lastmod>
+    <lastmod>2026-11-04</lastmod>
+  </url>
+
+  <url>
+    <loc>https://www.site-mariage.com/faire-part-digital-comment-ca-marche.html</loc>
+    <lastmod>2026-11-04</lastmod>
   </url>
 
   <!-- Pages légales -->
