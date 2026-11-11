@@ -1210,6 +1210,11 @@ img,svg{max-width:100%;height:auto;image-rendering:-webkit-optimize-contrast}
 .t-ey::before,.t-ey::after{content:"";width:34px;height:1px;background:linear-gradient(to right,transparent,var(--gold));opacity:.7}
 .t-ey::after{transform:scaleX(-1)}
 @media(max-width:600px){.t-ey{letter-spacing:5px;gap:12px;font-size:10px}.t-ey::before,.t-ey::after{width:22px}}
+.demo-tabs{display:flex;justify-content:center;gap:10px;flex-wrap:wrap;margin:0 auto 44px}
+.demo-tab{font-family:'Josefin Sans',sans-serif;font-size:11px;letter-spacing:3px;text-transform:uppercase;color:var(--ink3);background:none;border:1px solid rgba(127,98,24,.35);padding:12px 20px;cursor:pointer;transition:background .3s,color .3s}
+.demo-tab.on{background:var(--gold);border-color:var(--gold);color:#fff}
+.demo-tab:not(.on):hover{border-color:var(--gold);color:var(--ink)}
+.demo-phone.light{background:#e9d6cf}
 </style>
 </head>
 <body>
@@ -1362,22 +1367,26 @@ img,svg{max-width:100%;height:auto;image-rendering:-webkit-optimize-contrast}
 <section class="sec" id="portfolio" style="background:linear-gradient(0deg,var(--white) 0%,#f5f0e8 100%)">
   <div class="si">
     <p class="s-ey rv">Réalisations</p>
-    <h2 class="s-ti rv" style="transition-delay:.1s">Nos <strong>sites de mariage</strong><br>sur-mesure réalisés</h2>
+    <h2 class="s-ti rv" style="transition-delay:.1s">Découvrez nos <strong>sites de mariage</strong><br>sur-mesure</h2>
     <div class="s-orn rv" style="transition-delay:.2s"><div class="so-l"></div><div class="so-d"></div><div class="so-l r"></div></div>
-    <p class="portfolio-intro rv" style="transition-delay:.3s">Chaque site de mariage est une invitation unique. Voici un site livré à un couple : vous pouvez l'essayer directement ici, comme le feront vos invités.</p>
+    <p class="portfolio-intro rv" style="transition-delay:.3s">Chaque site de mariage est une invitation unique. Un site livré à un couple, et un exemple de style pour montrer un autre univers. Essayez-les directement ici, comme le feront vos invités.</p>
+    <div class="demo-tabs rv" role="group" aria-label="Choisir un exemple" style="transition-delay:.35s">
+      <button type="button" class="demo-tab on" data-k="brahim" aria-pressed="true">Sombre · Site livré</button>
+      <button type="button" class="demo-tab" data-k="romantique" aria-pressed="false">Clair · Exemple de style</button>
+    </div>
     <div class="demo rv" style="transition-delay:.4s">
       <div class="demo-phone">
         <div class="demo-screen" id="demo-screen">
-          <img class="demo-poster" src="portfolio-brahim-ouverture.webp" width="390" height="844" alt="Page d'ouverture du site de mariage de Brahim et Norhene" loading="lazy" decoding="async">
+          <img class="demo-poster" id="demo-poster" src="portfolio-brahim-ouverture.webp" width="390" height="844" alt="Page d'ouverture du site de mariage de Brahim et Norhene" loading="lazy" decoding="async">
           <button class="demo-play" id="demo-play" type="button" aria-label="Lancer la démo interactive du site de Brahim et Norhene"><span>Essayer la démo</span></button>
         </div>
       </div>
       <div class="demo-txt">
-        <p class="demo-ey">Un site réellement livré</p>
-        <h3 class="demo-names">Brahim <em>&amp;</em> Norhene</h3>
-        <p class="demo-meta">Paris · 14 juillet 2025</p>
-        <p class="demo-p">Invitation qui s'ouvre au toucher, compte à rebours, programme de la soirée, lieu, menu, hébergements et confirmation de présence en ligne. Tout est pensé pour être lu sur téléphone par les invités.</p>
-        <ul class="demo-list">
+        <p class="demo-ey" id="demo-ey">Un site réellement livré</p>
+        <h3 class="demo-names" id="demo-names">Brahim <em>&amp;</em> Norhene</h3>
+        <p class="demo-meta" id="demo-meta">Paris · 14 juillet 2025</p>
+        <p class="demo-p" id="demo-p">Invitation qui s'ouvre au toucher, compte à rebours, programme de la soirée, lieu, menu, hébergements et confirmation de présence en ligne. Tout est pensé pour être lu sur téléphone par les invités.</p>
+        <ul class="demo-list" id="demo-list">
           <li>Ouverture animée de l'invitation</li>
           <li>Compte à rebours jusqu'au jour J</li>
           <li>Programme, lieu, menu, dress code</li>
@@ -1385,7 +1394,7 @@ img,svg{max-width:100%;height:auto;image-rendering:-webkit-optimize-contrast}
         </ul>
         <div class="demo-act">
           <button class="btn-primary demo-try" type="button" id="demo-try">Essayer la démo</button>
-          <a class="btn-secondary" href="https://braimmariage.netlify.app/" target="_blank" rel="noopener">Voir le site complet</a>
+          <a class="btn-secondary" id="demo-full" href="https://braimmariage.netlify.app/" target="_blank" rel="noopener">Voir le site complet</a>
         </div>
       </div>
     </div>
@@ -2093,9 +2102,27 @@ setTimeout(function(){if(b.parentNode)b.parentNode.removeChild(b)},900)});
 })();
 </script>
 <script>
-(function(){var scr=document.getElementById('demo-screen');if(!scr)return;var done=false;
-function go(){if(done)return;done=true;var f=document.createElement('iframe');f.src='https://braimmariage.netlify.app/';f.title="Démo interactive : site de mariage de Brahim et Norhene";f.loading='lazy';f.setAttribute('referrerpolicy','no-referrer');f.setAttribute('sandbox','allow-scripts allow-same-origin allow-forms allow-popups');scr.appendChild(f);var b=document.getElementById('demo-play');if(b)b.remove();var p=scr.querySelector('.demo-poster');if(p)p.style.display='none'}
-['demo-play','demo-try'].forEach(function(id){var e=document.getElementById(id);if(e)e.addEventListener('click',go)})})();
+(function(){var scr=document.getElementById('demo-screen');if(!scr)return;
+var D={
+brahim:{url:'https://braimmariage.netlify.app/',poster:'portfolio-brahim-ouverture.webp',alt:"Page d'ouverture du site de mariage de Brahim et Norhene",ey:'Un site réellement livré',names:'Brahim <em>&amp;</em> Norhene',meta:'Paris · 14 juillet 2025',p:"Invitation qui s'ouvre au toucher, compte à rebours, programme de la soirée, lieu, menu, hébergements et confirmation de présence en ligne. Tout est pensé pour être lu sur téléphone par les invités.",list:["Ouverture animée de l'invitation","Compte à rebours jusqu'au jour J","Programme, lieu, menu, dress code","RSVP en ligne avec message aux mariés"],full:'Voir le site complet',light:false,title:"Démo interactive : site de mariage de Brahim et Norhene"},
+romantique:{url:'exemple-romantique.html',poster:'portfolio-exemple-romantique.webp',alt:"Enveloppe de l'exemple de style romantique",ey:'Exemple de style · couple fictif',names:'Camille <em>&amp;</em> Antoine',meta:'Style clair et romantique',p:"Une maquette pour montrer un autre univers : tons ivoire et rosé, enveloppe à cacheter, script élégant. Votre site reprend vos couleurs, vos textes et votre ambiance.",list:["Enveloppe à cachet qui s'ouvre","Compte à rebours en douceur","Programme et lieu sur mesure","RSVP prêt à recevoir les réponses"],full:"Ouvrir l'exemple",light:true,title:"Démo interactive : exemple de style romantique"}};
+var cur='brahim',loaded=false;
+var $=function(i){return document.getElementById(i)};
+function reset(){var f=scr.querySelector('iframe');if(f)f.remove();loaded=false;
+var p=$('demo-poster');p.style.display='';var k=D[cur];p.src=k.poster;p.alt=k.alt;
+if(!$('demo-play')){var b=document.createElement('button');b.id='demo-play';b.className='demo-play';b.type='button';b.innerHTML='<span>Essayer la démo</span>';b.addEventListener('click',go);scr.appendChild(b)}
+$('demo-play').setAttribute('aria-label','Lancer la démo interactive')}
+function go(){if(loaded)return;loaded=true;var k=D[cur];var f=document.createElement('iframe');f.src=k.url;f.title=k.title;f.loading='lazy';f.setAttribute('referrerpolicy',k.light?'same-origin':'no-referrer');f.setAttribute('sandbox','allow-scripts allow-same-origin allow-forms allow-popups');scr.appendChild(f);var b=$('demo-play');if(b)b.remove();$('demo-poster').style.display='none'}
+function setTab(k){cur=k;var d=D[k];
+$('demo-ey').textContent=d.ey;$('demo-names').innerHTML=d.names;$('demo-meta').textContent=d.meta;$('demo-p').textContent=d.p;
+$('demo-list').innerHTML=d.list.map(function(t){return '<li>'+t+'</li>'}).join('');
+var a=$('demo-full');a.href=d.url;a.textContent=d.full;
+document.querySelector('.demo-phone').classList.toggle('light',d.light);
+document.querySelectorAll('.demo-tab').forEach(function(t){var on=t.getAttribute('data-k')===k;t.classList.toggle('on',on);t.setAttribute('aria-pressed',on)});
+reset()}
+$('demo-play').addEventListener('click',go);$('demo-try').addEventListener('click',go);
+document.querySelectorAll('.demo-tab').forEach(function(t){t.addEventListener('click',function(){setTab(t.getAttribute('data-k'))})});
+})();
 </script>
 </body>
 </html>

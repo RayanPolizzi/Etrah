@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Exemple de style romantique · Etrah</title>
+<style>
+@font-face{font-family:'Cormorant Garamond';font-style:normal;font-weight:300 700;font-display:swap;src:url(fonts/cormorant.woff) format('woff')}
+@font-face{font-family:'Cormorant Garamond';font-style:italic;font-weight:300 600;font-display:swap;src:url(fonts/cormorant-italic.woff) format('woff')}
+@font-face{font-family:'Josefin Sans';font-style:normal;font-weight:300 600;font-display:swap;src:url(fonts/josefin.woff) format('woff')}
+@font-face{font-family:'Pinyon Script';font-style:normal;font-weight:400;font-display:swap;src:url(fonts/pinyon.woff) format('woff')}
+:root{--ivory:#fbf6f1;--blush:#f1dcd6;--rose:#b9776f;--sage:#7d8b75;--ink:#3b2f2b;--ink2:#6a5a54;--gold:#a8823a}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{background:var(--ivory);color:var(--ink);font-family:'Cormorant Garamond',serif;font-size:18px;line-height:1.7;overflow-x:hidden}
+.tag{position:fixed;top:0;left:0;right:0;z-index:50;text-align:center;font-family:'Josefin Sans',sans-serif;font-size:9px;letter-spacing:3px;text-transform:uppercase;color:#fff;background:rgba(59,47,43,.82);padding:6px 8px}
+/* Enveloppe */
+#env{position:fixed;inset:0;z-index:40;background:radial-gradient(ellipse at 50% 40%,#fff 0%,var(--blush) 100%);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:34px;transition:opacity .9s ease,visibility .9s}
+#env.open{opacity:0;visibility:hidden}
+.env{position:relative;width:min(280px,72vw);aspect-ratio:1.5;background:#f7e8e3;border:1px solid rgba(168,130,58,.4);box-shadow:0 24px 50px -20px rgba(120,80,70,.45)}
+.env::before{content:"";position:absolute;inset:0;background:linear-gradient(to top right,transparent 49.6%,rgba(168,130,58,.25) 50%,transparent 50.4%),linear-gradient(to top left,transparent 49.6%,rgba(168,130,58,.25) 50%,transparent 50.4%)}
+.flap{position:absolute;left:0;right:0;top:0;height:60%;background:#f3dcd5;clip-path:polygon(0 0,100% 0,50% 100%);transform-origin:top;transition:transform .9s cubic-bezier(.6,0,.2,1);border-top:1px solid rgba(168,130,58,.4)}
+.seal{position:absolute;left:50%;top:52%;width:46px;height:46px;margin:-23px 0 0 -23px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#d79a92,var(--rose));display:grid;place-items:center;color:#fff;font-family:'Pinyon Script',cursive;font-size:24px;box-shadow:0 4px 10px rgba(120,60,50,.4);z-index:2;transition:opacity .4s}
+#env.opening .flap{transform:rotateX(180deg)}
+#env.opening .seal{opacity:0}
+.env-names{font-family:'Pinyon Script',cursive;font-size:38px;color:var(--ink);text-align:center;line-height:1.1}
+.env-btn{font-family:'Josefin Sans',sans-serif;font-size:11px;letter-spacing:4px;text-transform:uppercase;color:var(--ink);background:none;border:1px solid var(--gold);padding:14px 26px;cursor:pointer}
+.env-btn:hover{background:var(--gold);color:#fff}
+/* Contenu */
+section{padding:84px 24px;text-align:center;position:relative}
+.hero{min-height:100vh;display:flex;flex-direction:column;justify-content:center;align-items:center;background:radial-gradient(ellipse at 50% 30%,#fff 0%,var(--ivory) 60%,var(--blush) 140%);padding-top:96px}
+.eyebrow{font-family:'Josefin Sans',sans-serif;font-size:11px;letter-spacing:6px;text-transform:uppercase;color:var(--sage);margin-bottom:26px}
+.names{font-family:'Pinyon Script',cursive;font-size:clamp(54px,15vw,92px);line-height:1.05;color:var(--ink)}
+.amp{font-family:'Cormorant Garamond',serif;font-style:italic;color:var(--rose);font-size:.45em;display:block;margin:4px 0}
+.date{font-family:'Josefin Sans',sans-serif;font-size:12px;letter-spacing:5px;text-transform:uppercase;color:var(--ink2);margin-top:30px}
+.orn{display:flex;align-items:center;justify-content:center;gap:12px;margin:26px 0}
+.orn i{width:54px;height:1px;background:linear-gradient(to right,transparent,var(--gold))}
+.orn i:last-child{transform:scaleX(-1)}
+.orn b{width:6px;height:6px;border:1px solid var(--gold);transform:rotate(45deg)}
+h2{font-weight:400;font-size:clamp(30px,8vw,42px);line-height:1.15;margin-bottom:10px}
+h2 em{color:var(--rose)}
+.cd{display:flex;justify-content:center;gap:14px;margin-top:30px}
+.cd div{min-width:68px;padding:16px 6px;background:#fff;border:1px solid rgba(185,119,111,.25);border-radius:4px}
+.cd b{display:block;font-size:32px;font-weight:400;color:var(--rose);line-height:1}
+.cd span{font-family:'Josefin Sans',sans-serif;font-size:9px;letter-spacing:3px;text-transform:uppercase;color:var(--ink2)}
+.alt{background:#fff}
+.prog{max-width:420px;margin:34px auto 0;text-align:left}
+.prog div{display:grid;grid-template-columns:70px 1fr;gap:16px;padding:16px 0;border-bottom:1px solid rgba(168,130,58,.22)}
+.prog time{font-family:'Josefin Sans',sans-serif;font-size:12px;letter-spacing:2px;color:var(--gold);padding-top:6px}
+.prog strong{display:block;font-weight:500;font-size:21px}
+.prog span{color:var(--ink2);font-style:italic;font-size:16px}
+.card{max-width:420px;margin:30px auto 0;padding:30px 24px;border:1px solid rgba(168,130,58,.35);background:var(--ivory)}
+.card p{color:var(--ink2)}
+form{max-width:420px;margin:30px auto 0;text-align:left}
+label{display:block;font-family:'Josefin Sans',sans-serif;font-size:10px;letter-spacing:3px;text-transform:uppercase;color:var(--ink2);margin:18px 0 6px}
+input,textarea{width:100%;font:inherit;font-size:17px;color:var(--ink);background:#fff;border:1px solid rgba(168,130,58,.35);padding:12px 14px;border-radius:2px}
+input:focus,textarea:focus{outline:2px solid var(--rose);outline-offset:1px}
+.choice{display:flex;gap:10px;margin-top:6px}
+.choice label{flex:1;margin:0;padding:13px 8px;text-align:center;border:1px solid rgba(168,130,58,.35);background:#fff;cursor:pointer;letter-spacing:1px;text-transform:none;font-family:'Cormorant Garamond',serif;font-size:17px;color:var(--ink)}
+.choice input{display:none}
+.choice input:checked+span{color:var(--rose);font-weight:600}
+.send{width:100%;margin-top:26px;font-family:'Josefin Sans',sans-serif;font-size:11px;letter-spacing:4px;text-transform:uppercase;color:#fff;background:var(--rose);border:0;padding:16px;cursor:pointer}
+.thanks{display:none;max-width:420px;margin:30px auto 0;padding:26px;border:1px solid var(--sage);color:var(--sage);font-style:italic;font-size:20px}
+.foot{padding:50px 24px 70px;background:var(--blush);color:var(--ink2);font-style:italic}
+.foot small{display:block;margin-top:14px;font-family:'Josefin Sans',sans-serif;font-style:normal;font-size:10px;letter-spacing:3px;text-transform:uppercase}
+.rv{opacity:0;transform:translateY(18px);transition:opacity .9s ease,transform .9s ease}
+.rv.in{opacity:1;transform:none}
+@media(prefers-reduced-motion:reduce){.rv{opacity:1;transform:none}.flap,#env{transition:none}}
+</style>
+</head>
+<body>
+<div class="tag">Exemple de style · Etrah</div>
+
+<div id="env" role="dialog" aria-label="Invitation">
+  <div class="env-names">Camille &amp; Antoine</div>
+  <div class="env"><div class="flap"></div><div class="seal">C&amp;A</div></div>
+  <button class="env-btn" id="open" type="button">Ouvrir l'invitation</button>
+</div>
+
+<section class="hero">
+  <p class="eyebrow rv">Nous nous marions</p>
+  <h1 class="names rv">Camille<span class="amp">&amp;</span>Antoine</h1>
+  <div class="orn rv"><i></i><b></b><i></i></div>
+  <p class="date rv">Samedi 12 juin 2027 · Votre lieu</p>
+</section>
+
+<section class="alt">
+  <h2 class="rv">Plus que <em>quelques jours</em></h2>
+  <div class="orn rv"><i></i><b></b><i></i></div>
+  <div class="cd rv" id="cd" aria-live="off"><div><b id="d">0</b><span>Jours</span></div><div><b id="h">0</b><span>Heures</span></div><div><b id="m">0</b><span>Min</span></div></div>
+</section>
+
+<section>
+  <h2 class="rv">Le <em>programme</em></h2>
+  <div class="orn rv"><i></i><b></b><i></i></div>
+  <div class="prog rv">
+    <div><time>15:00</time><p><strong>Cérémonie</strong><span>Dans les jardins, sous les arches fleuries</span></p></div>
+    <div><time>17:00</time><p><strong>Cocktail</strong><span>Rafraîchissements et douceurs</span></p></div>
+    <div><time>19:30</time><p><strong>Dîner</strong><span>Table dressée sous les guirlandes</span></p></div>
+    <div><time>22:00</time><p><strong>Soirée dansante</strong><span>Jusqu'au bout de la nuit</span></p></div>
+  </div>
+</section>
+
+<section class="alt">
+  <h2 class="rv">Le <em>lieu</em></h2>
+  <div class="orn rv"><i></i><b></b><i></i></div>
+  <div class="card rv"><p>Votre domaine, votre adresse, votre plan d'accès, vos hôtels conseillés et vos informations pratiques apparaissent ici, sur mesure.</p></div>
+</section>
+
+<section>
+  <h2 class="rv">Confirmez <em>votre présence</em></h2>
+  <div class="orn rv"><i></i><b></b><i></i></div>
+  <form class="rv" id="f">
+    <label for="n">Prénom &amp; nom</label><input id="n" autocomplete="name">
+    <label>Présence</label>
+    <div class="choice"><label><input type="radio" name="p" checked><span>Avec joie</span></label><label><input type="radio" name="p"><span>Avec regret</span></label></div>
+    <label for="t">Un mot pour les mariés</label><textarea id="t" rows="3"></textarea>
+    <button class="send" type="submit">Confirmer</button>
+  </form>
+  <p class="thanks" id="ok">Merci ! Dans un vrai site, la réponse est enregistrée et envoyée aux mariés.</p>
+</section>
+
+<div class="foot">Camille &amp; Antoine<small>Exemple de style créé par Etrah · couple fictif</small></div>
+
+<script>
+(function(){
+var env=document.getElementById('env');
+document.getElementById('open').addEventListener('click',function(){env.classList.add('opening');setTimeout(function(){env.classList.add('open')},1000)});
+var io=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target)}})},{threshold:.15});
+document.querySelectorAll('.rv').forEach(function(e){io.observe(e)});
+var t=new Date('2027-06-12T15:00:00+02:00').getTime();
+function tick(){var s=Math.max(0,Math.floor((t-Date.now())/1000));d.textContent=Math.floor(s/86400);h.textContent=Math.floor(s%86400/3600);m.textContent=Math.floor(s%3600/60)}
+var d=document.getElementById('d'),h=document.getElementById('h'),m=document.getElementById('m');tick();setInterval(tick,30000);
+document.getElementById('f').addEventListener('submit',function(e){e.preventDefault();this.style.display='none';document.getElementById('ok').style.display='block'});
+})();
+</script>
+</body>
+</html>
