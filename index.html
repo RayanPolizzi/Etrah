@@ -34,7 +34,9 @@
 
 <!-- Favicon SVG inline -->
 <link rel="icon" type="image/svg+xml" href="favicon.svg">
-<link rel="apple-touch-icon" href="favicon.svg">
+<link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
+<link rel="icon" type="image/png" sizes="512x512" href="icon-512.png">
 <link rel="shortcut icon" href="favicon.svg">
 
 <!-- Schema.org structured data -->
@@ -276,8 +278,6 @@ nav.scrolled{background:rgba(245,240,232,.95);backdrop-filter:blur(20px);padding
 
 
 /* ── BADGE HERO ── */
-.hero-badge{display:inline-flex;align-items:center;gap:10px;font-family:'Josefin Sans',sans-serif;font-weight:300;font-size:9px;letter-spacing:5px;text-transform:uppercase;color:var(--ink);background:var(--white);border:1px solid rgba(184,146,42,.55);border-radius:40px;padding:11px 22px;margin-bottom:32px;opacity:0;animation:fadeUp .8s ease .1s forwards;box-shadow:0 3px 18px rgba(184,146,42,.2)}
-.hero-badge-dot{width:8px;height:8px;border-radius:50%;background:var(--gold);flex-shrink:0;box-shadow:0 0 6px rgba(184,146,42,.6)}
 50%{opacity:.45;transform:scale(.75)}
 .hero-eyebrow{
   font-family:'Josefin Sans',sans-serif;font-weight:300;
@@ -338,17 +338,30 @@ nav.scrolled{background:rgba(245,240,232,.95);backdrop-filter:blur(20px);padding
 /* transitions spécifiques selon contexte - géré inline */
 
 /* PROCESS */
-.process-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;border:1px solid rgba(184,146,42,.12);background:rgba(184,146,42,.12)}
-.pc{background:#f0ebe1;padding:52px 44px;position:relative;overflow:hidden;transition:background .45s ease}
-.pc::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(to right,transparent,var(--gold),transparent);transform:scaleX(0);transform-origin:left;transition:transform .6s ease}
-.pc:hover{background:var(--white)}
-.pc:hover::before{transform:scaleX(1)}
-.pc-num{font-family:'Cormorant Garamond',serif;font-weight:300;font-size:64px;color:rgba(184,146,42,.1);line-height:1;margin-bottom:20px;transition:color .3s}
-.pc:hover .pc-num{color:rgba(184,146,42,.22)}
-.pc-title{font-family:'Cormorant Garamond',serif;font-weight:600;font-size:20px;color:var(--ink);margin-bottom:14px}
-.pc-desc{font-family:'Cormorant Garamond',serif;font-style:italic;font-weight:300;font-size:15px;color:var(--ink3);line-height:1.85}
 .sec{padding:120px 60px;position:relative}
-@media(max-width:768px){.process-grid{grid-template-columns:1fr}.pc{padding:36px 28px}.sec{padding:80px 24px}.sep{margin:0 24px}}
+/* TIMELINE */
+.tl{list-style:none;position:relative;max-width:920px;margin:64px auto 0;padding:0}
+.tl::before{content:'';position:absolute;left:50%;top:8px;bottom:8px;width:1px;background:linear-gradient(to bottom,transparent,var(--gold) 12%,var(--gold) 88%,transparent)}
+.tl-item{position:relative;width:50%;padding:0 56px 56px 0;box-sizing:border-box}
+.tl-item:last-child{padding-bottom:0}
+.tl-item:nth-child(even){margin-left:50%;padding:0 0 56px 56px}
+.tl-item:nth-child(even):last-child{padding-bottom:0}
+.tl-dot{position:absolute;top:10px;right:-6px;width:11px;height:11px;border-radius:50%;background:#fdfaf5;border:1px solid var(--gold);box-shadow:0 0 0 5px rgba(184,146,42,.12)}
+.tl-item:nth-child(even) .tl-dot{right:auto;left:-6px}
+.tl-card{text-align:right}
+.tl-item:nth-child(even) .tl-card{text-align:left}
+.tl-step{font-family:'Josefin Sans',sans-serif;font-weight:300;font-size:10px;letter-spacing:4px;text-transform:uppercase;color:var(--gold);margin-bottom:12px}
+.tl-title{font-family:'Cormorant Garamond',serif;font-weight:600;font-size:24px;color:var(--ink);margin:0 0 12px;line-height:1.25}
+.tl-desc{font-family:'Cormorant Garamond',serif;font-style:italic;font-weight:400;font-size:16px;color:var(--ink3);line-height:1.8;margin:0}
+@media(max-width:768px){
+.tl{margin-top:44px}
+.tl::before{left:5px}
+.tl-item,.tl-item:nth-child(even){width:100%;margin-left:0;padding:0 0 44px 36px}
+.tl-dot,.tl-item:nth-child(even) .tl-dot{left:0;right:auto}
+.tl-card,.tl-item:nth-child(even) .tl-card{text-align:left}
+.tl-title{font-size:21px}
+}
+@media(max-width:768px){.sec{padding:80px 24px}.sep{margin:0 24px}}
 
 /* PORTFOLIO */
 .portfolio-intro{font-family:'Cormorant Garamond',serif;font-style:italic;font-weight:300;font-size:clamp(16px,2vw,20px);color:var(--ink3);text-align:center;line-height:1.8;max-width:540px;margin:0 auto 64px}
@@ -870,8 +883,6 @@ img,svg{max-width:100%;height:auto;image-rendering:-webkit-optimize-contrast}
 
 
 /* ── BADGE HERO ── */
-.hero-badge{display:inline-flex;align-items:center;gap:10px;font-family:'Josefin Sans',sans-serif;font-weight:300;font-size:9px;letter-spacing:5px;text-transform:uppercase;color:var(--ink);background:var(--white);border:1px solid rgba(184,146,42,.55);border-radius:40px;padding:11px 22px;margin-bottom:32px;opacity:0;animation:fadeUp .8s ease .1s forwards;box-shadow:0 3px 18px rgba(184,146,42,.2)}
-.hero-badge-dot{width:8px;height:8px;border-radius:50%;background:var(--gold);flex-shrink:0;box-shadow:0 0 6px rgba(184,146,42,.6)}
 50%{opacity:.45;transform:scale(.75)}
 .hero-eyebrow{font-size:10px;letter-spacing:3px;margin-bottom:18px}
   .hero-title{font-size:clamp(28px,7.5vw,42px);margin-bottom:16px;line-height:1.1}
@@ -894,11 +905,6 @@ img,svg{max-width:100%;height:auto;image-rendering:-webkit-optimize-contrast}
   .section-bridge{height:44px}
 
   /* PROCESS */
-  .process-grid{grid-template-columns:1fr;gap:0}
-  .pc{padding:28px 20px}
-  .pc-num{font-size:40px;margin-bottom:12px}
-  .pc-title{font-size:17px}
-  .pc-desc{font-size:14px}
 
   /* PORTFOLIO */
   .portfolio-grid{grid-template-columns:1fr;gap:2px}
@@ -1009,8 +1015,6 @@ img,svg{max-width:100%;height:auto;image-rendering:-webkit-optimize-contrast}
 
 
 /* ── BADGE HERO ── */
-.hero-badge{display:inline-flex;align-items:center;gap:10px;font-family:'Josefin Sans',sans-serif;font-weight:300;font-size:9px;letter-spacing:5px;text-transform:uppercase;color:var(--ink);background:var(--white);border:1px solid rgba(184,146,42,.55);border-radius:40px;padding:11px 22px;margin-bottom:32px;opacity:0;animation:fadeUp .8s ease .1s forwards;box-shadow:0 3px 18px rgba(184,146,42,.2)}
-.hero-badge-dot{width:8px;height:8px;border-radius:50%;background:var(--gold);flex-shrink:0;box-shadow:0 0 6px rgba(184,146,42,.6)}
 50%{opacity:.45;transform:scale(.75)}
 .hero-eyebrow{letter-spacing:3px;font-size:10px}
   .s-ti{font-size:clamp(22px,6vw,32px)}
@@ -1167,7 +1171,6 @@ img,svg{max-width:100%;height:auto;image-rendering:-webkit-optimize-contrast}
   <div class="hero-line-l"></div>
   <div class="hero-line-r"></div>
   <div class="hero-content">
-    <div class="hero-badge"><span class="hero-badge-dot"></span>5 places restantes pour ce mois-ci</div>
     <p class="hero-eyebrow">Site de mariage · Faire-part digital · Conçu à Nice</p>
     <h1 class="hero-title"><span style="white-space:nowrap;display:block;text-align:center">Votre <em id="typed-em">site de mariage</em><span class="typed-cursor" id="typed-cursor" aria-hidden="true"></span></span><span style="display:block;text-align:center">sur-mesure et inoubliable</span></h1>
     <div class="hero-rule"></div>
@@ -1191,23 +1194,32 @@ img,svg{max-width:100%;height:auto;image-rendering:-webkit-optimize-contrast}
     <p class="s-ey rv">Comment ça marche</p>
     <h2 class="s-ti rv" style="transition-delay:.1s">Votre site de mariage,<br><strong>simple et mémorable</strong></h2>
     <div class="s-orn rv" style="transition-delay:.2s"><div class="so-l"></div><div class="so-d"></div><div class="so-l r"></div></div>
-    <div class="process-grid rv" style="transition-delay:.3s">
-      <div class="pc">
-        <div class="pc-num">01</div>
-        <div class="pc-title">Un appel, tout commence</div>
-        <div class="pc-desc">30 minutes ensemble pour parler de vous, de votre histoire, de votre vision du grand jour. Style, couleurs, lieu, ambiance, on pose les bases de votre site de mariage sur-mesure, conçu pour vous ressembler vraiment, pas un template.</div>
-      </div>
-      <div class="pc">
-        <div class="pc-num">02</div>
-        <div class="pc-title">Vous remplissez, on crée</div>
-        <div class="pc-desc">Un formulaire sur-mesure vous guide pour nous transmettre tous vos contenus : programme, menu, lieu, invités, dress code. Plus vous partagez, plus le résultat est précis et personnel.</div>
-      </div>
-      <div class="pc">
-        <div class="pc-num">03</div>
-        <div class="pc-title">Prêt en 10 à 14 jours</div>
-        <div class="pc-desc">Votre site de mariage est livré, hébergé et prêt à partager. Envoyez le lien à vos invités quelques mois avant la cérémonie. Deux séries de retouches incluses pour que chaque détail soit parfait.</div>
-      </div>
-    </div>
+    <ol class="tl rv" style="transition-delay:.3s">
+      <li class="tl-item">
+        <span class="tl-dot" aria-hidden="true"></span>
+        <div class="tl-card">
+          <div class="tl-step">Étape 01 · 30 min</div>
+          <h3 class="tl-title">Un appel, tout commence</h3>
+          <p class="tl-desc">30 minutes ensemble pour parler de vous, de votre histoire, de votre vision du grand jour. Style, couleurs, lieu, ambiance : on pose les bases d'un site de mariage conçu pour vous ressembler, pas un template.</p>
+        </div>
+      </li>
+      <li class="tl-item">
+        <span class="tl-dot" aria-hidden="true"></span>
+        <div class="tl-card">
+          <div class="tl-step">Étape 02 · Vous</div>
+          <h3 class="tl-title">Vous remplissez, on crée</h3>
+          <p class="tl-desc">Un formulaire sur-mesure vous guide pour transmettre vos contenus : programme, menu, lieu, invités, dress code. Plus vous partagez, plus le résultat est précis et personnel.</p>
+        </div>
+      </li>
+      <li class="tl-item">
+        <span class="tl-dot" aria-hidden="true"></span>
+        <div class="tl-card">
+          <div class="tl-step">Étape 03 · 10 à 14 jours</div>
+          <h3 class="tl-title">Livré, hébergé, prêt à partager</h3>
+          <p class="tl-desc">Envoyez le lien à vos invités quelques mois avant la cérémonie. Deux séries de retouches sont incluses pour que chaque détail soit parfait.</p>
+        </div>
+      </li>
+    </ol>
   </div>
 </section>
 
