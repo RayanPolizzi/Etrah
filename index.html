@@ -388,14 +388,26 @@ nav.scrolled{background:rgba(245,240,232,.95);backdrop-filter:blur(20px);padding
 }
 @media(prefers-reduced-motion:reduce){.tl-core span,.tl-step,.tl-desc,.tl-stat{opacity:1!important;transform:none!important;clip-path:none!important}.tl-title span{transform:none!important}.tl-core .r1{stroke-dashoffset:0!important}.tl-item::after{transform:translateX(-.5px) scaleY(1)!important}}
 /* CTA BAND */
-#cta-band{background:var(--ink);padding:96px 24px;text-align:center;position:relative;overflow:hidden}
-#cta-band::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 60% 90% at 50% 0%,rgba(212,170,64,.16),transparent 70%)}
-.cb-inner{position:relative;max-width:720px;margin:0 auto}
-.cb-eyebrow{font-family:'Josefin Sans',sans-serif;font-weight:400;font-size:11px;letter-spacing:5px;text-transform:uppercase;color:var(--gold2);margin:0 0 22px}
-.cb-title{text-wrap:balance;font-family:'Cormorant Garamond',serif;font-weight:400;font-size:clamp(30px,4.4vw,46px);line-height:1.15;color:#fdfaf5;margin:0 0 20px}
-.cb-title em{font-style:italic;color:var(--gold2)}
-.cb-sub{font-family:'Cormorant Garamond',serif;font-weight:500;font-size:19px;color:rgba(253,250,245,.9);margin:0 0 36px}
-#cta-band .cb-btn{display:inline-block;opacity:1;animation:none}
+#cta-band{background:#1a1612;padding:128px 24px;text-align:center;position:relative;overflow:hidden}
+#cta-band::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 55% 80% at 50% 0%,rgba(212,170,64,.2),transparent 70%),radial-gradient(ellipse 40% 60% at 50% 120%,rgba(212,170,64,.1),transparent 70%)}
+.cb-frame{position:absolute;inset:28px;border:1px solid rgba(212,170,64,.28);pointer-events:none}
+.cb-frame::before,.cb-frame::after{content:'';position:absolute;width:9px;height:9px;background:#1a1612;border:1px solid rgba(212,170,64,.6);transform:rotate(45deg);left:50%;margin-left:-5px}
+.cb-frame::before{top:-5px}.cb-frame::after{bottom:-5px}
+.cb-inner{position:relative;max-width:760px;margin:0 auto}
+.cb-orn{display:flex;align-items:center;justify-content:center;gap:14px;margin-bottom:30px}
+.cb-orn i{display:block;width:56px;height:1px;background:linear-gradient(to right,transparent,rgba(212,170,64,.8))}
+.cb-orn i:last-child{background:linear-gradient(to left,transparent,rgba(212,170,64,.8))}
+.cb-orn b{display:block;width:7px;height:7px;border:1px solid var(--gold2);transform:rotate(45deg)}
+.cb-eyebrow{font-family:'Josefin Sans',sans-serif;font-weight:400;font-size:11px;letter-spacing:6px;text-transform:uppercase;color:var(--gold2);margin:0 0 28px}
+.cb-title{font-family:'Cormorant Garamond',serif;font-weight:300;font-size:clamp(34px,5.2vw,60px);line-height:1.12;color:#fdfaf5;margin:0 0 26px;letter-spacing:.2px}
+.cb-title em{font-style:italic;font-weight:400;color:var(--gold2)}
+.cb-sub{font-family:'Cormorant Garamond',serif;font-style:italic;font-weight:500;font-size:20px;color:rgba(253,250,245,.88);margin:0 0 48px}
+.cb-actions{display:flex;flex-direction:column;align-items:center;gap:26px}
+.cb-btn{display:inline-block;font-family:'Josefin Sans',sans-serif;font-weight:500;font-size:12px;letter-spacing:5px;text-transform:uppercase;text-decoration:none;color:#1a1612;background:linear-gradient(135deg,#e3bd55,#d4aa40 55%,#c4983a);padding:20px 46px;transition:transform .35s ease,box-shadow .35s ease;box-shadow:0 10px 34px -10px rgba(212,170,64,.55)}
+.cb-btn:hover{transform:translateY(-3px);box-shadow:0 16px 40px -10px rgba(212,170,64,.75)}
+.cb-link{font-family:'Cormorant Garamond',serif;font-style:italic;font-weight:500;font-size:18px;color:rgba(253,250,245,.9);text-decoration:none;border-bottom:1px solid rgba(212,170,64,.5);padding-bottom:3px;transition:color .3s,border-color .3s}
+.cb-link:hover{color:var(--gold2);border-color:var(--gold2)}
+@media(max-width:700px){#cta-band{padding:96px 24px}.cb-frame{inset:14px}.cb-sub{font-size:18px;margin-bottom:38px}.cb-btn{padding:18px 30px;letter-spacing:4px}}
 @media(max-width:768px){.sec{padding:80px 24px}.sep{margin:0 24px}}
 
 /* PORTFOLIO */
@@ -1479,11 +1491,16 @@ img,svg{max-width:100%;height:auto;image-rendering:-webkit-optimize-contrast}
 
 <!-- CTA BAND -->
 <section id="cta-band">
-  <div class="cb-inner">
+  <div class="cb-frame" aria-hidden="true"></div>
+  <div class="cb-inner rv">
+    <div class="cb-orn" aria-hidden="true"><i></i><b></b><i></i></div>
     <p class="cb-eyebrow">Réservez votre créneau</p>
-    <h2 class="cb-title">Votre histoire mérite un site <em>à son image</em></h2>
+    <h2 class="cb-title">Votre histoire mérite<br>un site <em>à son image</em></h2>
     <p class="cb-sub">Réponse sous 24 h · Sans engagement · Livraison en 10 à 14 jours</p>
-    <a class="btn-primary cb-btn" href="#contact">Démarrer mon projet</a>
+    <div class="cb-actions">
+      <a class="cb-btn" href="#contact">Démarrer mon projet</a>
+      <a class="cb-link" href="https://wa.me/33658435326" target="_blank" rel="noopener">Ou écrivez-nous sur WhatsApp</a>
+    </div>
   </div>
 </section>
 
