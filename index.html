@@ -1187,6 +1187,29 @@ img,svg{max-width:100%;height:auto;image-rendering:-webkit-optimize-contrast}
 .demo-note a{color:var(--gold);text-decoration:none;font-style:normal;font-family:'Josefin Sans',sans-serif;font-size:11px;letter-spacing:3px;text-transform:uppercase;white-space:nowrap}
 @media(max-width:860px){.demo{grid-template-columns:1fr;gap:40px}.demo-txt{text-align:center}.demo-list li{text-align:left}.demo-act{justify-content:center}.demo-phone{max-width:300px}}
 @media(max-width:600px){.shots{grid-template-columns:repeat(2,1fr);gap:16px;margin-top:48px}}
+
+/* ── Titres affinés ── */
+.s-ey{font-weight:400;font-size:11px;letter-spacing:7px;margin-bottom:20px;display:flex;align-items:center;justify-content:center;gap:18px}
+.s-ey::before,.s-ey::after{content:"";width:34px;height:1px;background:linear-gradient(to right,transparent,var(--gold));opacity:.7}
+.s-ey::after{transform:scaleX(-1)}
+.s-ti{font-style:normal;font-weight:400;font-size:clamp(34px,4.6vw,56px);line-height:1.14;letter-spacing:.005em;margin-bottom:26px;text-shadow:none}
+.s-ti strong,.s-ti em{font-weight:400;font-style:italic;color:var(--gold)}
+.s-orn{margin-bottom:68px;gap:14px}
+.so-l{width:56px;opacity:.75}
+.so-d{width:6px;height:6px;border-width:1px}
+@media(max-width:600px){.s-ey{letter-spacing:5px;gap:12px;font-size:10px}.s-ey::before,.s-ey::after{width:22px}.s-ti{font-size:clamp(30px,8.4vw,38px);margin-bottom:20px}.s-orn{margin-bottom:44px}}
+
+.t-title,.faq-title,.rs-title{font-style:normal;font-weight:400;line-height:1.14;letter-spacing:.005em}
+.t-title strong,.faq-title strong,.rs-title strong,.t-title em,.faq-title em,.rs-title em{font-weight:400;font-style:italic;color:var(--gold)}
+.faq-ey{font-weight:400;font-size:11px;letter-spacing:7px;margin-bottom:20px;display:flex;align-items:center;justify-content:center;gap:18px}
+.faq-ey::before,.faq-ey::after{content:"";width:34px;height:1px;background:linear-gradient(to right,transparent,var(--gold));opacity:.7}
+.faq-ey::after{transform:scaleX(-1)}
+.blog-title{font-weight:500}
+@media(max-width:600px){.faq-ey{letter-spacing:5px;gap:12px;font-size:10px}.faq-ey::before,.faq-ey::after{width:22px}}
+.t-ey{font-weight:400;font-size:11px;letter-spacing:7px;margin-bottom:20px;display:flex;align-items:center;justify-content:center;gap:18px}
+.t-ey::before,.t-ey::after{content:"";width:34px;height:1px;background:linear-gradient(to right,transparent,var(--gold));opacity:.7}
+.t-ey::after{transform:scaleX(-1)}
+@media(max-width:600px){.t-ey{letter-spacing:5px;gap:12px;font-size:10px}.t-ey::before,.t-ey::after{width:22px}}
 </style>
 </head>
 <body>
@@ -1366,13 +1389,6 @@ img,svg{max-width:100%;height:auto;image-rendering:-webkit-optimize-contrast}
         </div>
       </div>
     </div>
-    <div class="shots rv" style="transition-delay:.5s">
-      <figure><img src="portfolio-brahim-ouverture.webp" width="390" height="844" alt="Ouverture de l'invitation" loading="lazy" decoding="async"><figcaption>Ouverture</figcaption></figure>
-      <figure><img src="portfolio-brahim-programme.webp" width="390" height="844" alt="Programme de la soirée" loading="lazy" decoding="async"><figcaption>Programme</figcaption></figure>
-      <figure><img src="portfolio-brahim-menu.webp" width="390" height="844" alt="Menu du repas" loading="lazy" decoding="async"><figcaption>Menu</figcaption></figure>
-      <figure><img src="portfolio-brahim-rsvp.webp" width="390" height="844" alt="Formulaire de confirmation de présence" loading="lazy" decoding="async"><figcaption>RSVP</figcaption></figure>
-    </div>
-    <p class="demo-note rv">Votre site aura son propre style : couleurs, textes, langues et ambiance selon votre histoire. <a href="#contact">Démarrer mon projet →</a></p>
   </div>
 </section>
 
