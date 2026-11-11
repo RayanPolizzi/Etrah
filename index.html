@@ -196,11 +196,15 @@
   ]
 }
 </script>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600&family=Josefin+Sans:wght@300;400;500;600&family=Pinyon+Script&display=swap">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600&family=Josefin+Sans:wght@300;400;500;600&family=Pinyon+Script&display=swap" media="print" onload="this.media='all'">
-<noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600&family=Josefin+Sans:wght@300;400;500;600&family=Pinyon+Script&display=swap"></noscript>
+<link rel="preload" as="font" type="font/woff" href="fonts/cormorant-italic.woff" crossorigin>
+<link rel="preload" as="font" type="font/woff" href="fonts/cormorant.woff" crossorigin>
+<link rel="preload" as="font" type="font/woff" href="fonts/josefin.woff" crossorigin>
+<style>
+@font-face{font-family:'Cormorant Garamond';font-style:normal;font-weight:300 700;font-display:swap;src:url(fonts/cormorant.woff) format('woff')}
+@font-face{font-family:'Cormorant Garamond';font-style:italic;font-weight:300 600;font-display:swap;src:url(fonts/cormorant-italic.woff) format('woff')}
+@font-face{font-family:'Josefin Sans';font-style:normal;font-weight:300 600;font-display:swap;src:url(fonts/josefin.woff) format('woff')}
+@font-face{font-family:'Pinyon Script';font-style:normal;font-weight:400;font-display:swap;src:url(fonts/pinyon.woff) format('woff')}
+</style>
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
 :root{
@@ -234,7 +238,7 @@ nav.scrolled{background:rgba(245,240,232,.95);backdrop-filter:blur(20px);padding
 @media(max-width:1000px){nav{padding:18px 24px}.nav-links{display:none}nav.scrolled{padding:14px 24px}}
 
 /* HERO */
-#hero{min-height:100vh;max-height:900px;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden;padding-top:36px;background:radial-gradient(ellipse 85% 65% at 50% 35%,#fdfaf5 0%,#faf6f0 60%,#f4ede3 100%)}
+#hero{min-height:min(100vh,900px);min-height:min(100svh,900px);display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden;padding:104px 0 84px;box-sizing:border-box;background:radial-gradient(ellipse 85% 65% at 50% 35%,#fdfaf5 0%,#faf6f0 60%,#f4ede3 100%)}
 .hero-bg{position:absolute;inset:0;background:radial-gradient(ellipse 70% 60% at 50% 40%,rgba(184,146,42,.07) 0%,transparent 65%),radial-gradient(ellipse 40% 40% at 80% 80%,rgba(184,146,42,.04) 0%,transparent 55%)}
 .hero-grain{position:absolute;inset:0;pointer-events:none;opacity:.022;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
 .hero-line-l{position:absolute;left:60px;top:0;bottom:0;width:1px;background:linear-gradient(to bottom,transparent,rgba(184,146,42,.15) 30%,rgba(184,146,42,.15) 70%,transparent)}
@@ -284,17 +288,17 @@ nav.scrolled{background:rgba(245,240,232,.95);backdrop-filter:blur(20px);padding
   font-family:'Josefin Sans',sans-serif;font-weight:300;
   font-size:11px;letter-spacing:5px;text-transform:uppercase;
   color:#7f6218;margin-bottom:36px;
-  opacity:0;animation:fadeUp .8s ease .3s forwards;
+  opacity:0;animation:fadeUp .6s ease .0s forwards;
 }
-.hero-title{font-family:'Cormorant Garamond',serif;font-style:italic;font-weight:300;font-size:clamp(44px,7vw,86px);color:var(--ink);line-height:1.06;margin-bottom:24px;opacity:0;animation:fadeUp .9s ease .5s forwards;text-align:center;width:100%}
+.hero-title{font-family:'Cormorant Garamond',serif;font-style:italic;font-weight:300;font-size:clamp(44px,7vw,86px);color:var(--ink);line-height:1.06;margin-bottom:24px;opacity:0;animation:fadeUp .6s ease .05s forwards;text-align:center;width:100%}
 .hero-title em{font-style:normal;font-weight:600;background:linear-gradient(135deg,var(--gold) 0%,var(--gold2) 50%,var(--gold) 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
-.hero-rule{width:40px;height:1px;background:linear-gradient(to right,transparent,var(--gold),transparent);margin:0 auto 28px;opacity:0;animation:fadeUp .8s ease .7s forwards}
+.hero-rule{width:40px;height:1px;background:linear-gradient(to right,transparent,var(--gold),transparent);margin:0 auto 28px;opacity:0;animation:fadeUp .6s ease .25s forwards}
 .typed-cursor::after{content:"|"}
 .typed-cursor{color:var(--gold);font-style:normal;font-weight:300;animation:cursorBlink .7s step-end infinite;margin-left:1px;-webkit-text-fill-color:var(--gold)}
 @keyframes cursorBlink{0%,100%{opacity:1}50%{opacity:0}}
 .typed-cursor.done{display:none}
-.hero-sub{font-family:'Cormorant Garamond',serif;font-style:italic;font-weight:400;font-size:clamp(15px,1.8vw,18px);color:var(--ink3);line-height:1.85;max-width:560px;margin:0 auto 44px;opacity:0;animation:fadeUp .8s ease .85s forwards}
-.hero-actions{display:flex;align-items:center;justify-content:center;gap:16px;flex-wrap:wrap;opacity:0;animation:fadeUp .8s ease 1s forwards}
+.hero-sub{font-family:'Cormorant Garamond',serif;font-style:italic;font-weight:400;font-size:clamp(15px,1.8vw,18px);color:var(--ink3);line-height:1.85;max-width:560px;margin:0 auto 44px;opacity:0;animation:fadeUp .6s ease .15s forwards}
+.hero-actions{display:flex;align-items:center;justify-content:center;gap:16px;flex-wrap:wrap;opacity:0;animation:fadeUp .6s ease .35s forwards}
 .btn-primary{
   font-family:'Josefin Sans',sans-serif;font-weight:400;
   font-size:11px;letter-spacing:5px;text-transform:uppercase;
@@ -925,7 +929,7 @@ img,svg{max-width:100%;height:auto;image-rendering:-webkit-optimize-contrast}
 /* ── BADGE HERO ── */
 50%{opacity:.45;transform:scale(.75)}
 .hero-eyebrow{font-size:10px;letter-spacing:3px;margin-bottom:18px}
-  .hero-title{font-size:clamp(28px,7.5vw,42px);margin-bottom:16px;line-height:1.1}
+  .hero-title{font-size:clamp(31px,8.6vw,44px);margin-bottom:16px;line-height:1.1}
   .hero-sub{font-size:15px;margin-bottom:28px;padding:0;line-height:1.75}
   .hero-rule{margin:0 auto 20px;width:32px}
   .hero-actions{flex-direction:column;gap:10px;width:100%;max-width:340px;margin:0 auto}
@@ -1015,7 +1019,7 @@ img,svg{max-width:100%;height:auto;image-rendering:-webkit-optimize-contrast}
 }
 /* ═══ RESPONSIVE MOBILE 480px ═══ */
 @media(max-width:480px){
-  .hero-title{font-size:clamp(28px,8vw,42px)}
+  .hero-title{font-size:clamp(31px,8.6vw,44px)}
   /* ── BANDEAU TICKER ── */
 #top-banner{display:none!important}
 .ticker-track{
@@ -1156,6 +1160,9 @@ img,svg{max-width:100%;height:auto;image-rendering:-webkit-optimize-contrast}
 .ig-close:hover{background:rgba(127,98,24,.08);color:var(--ink)}
 @media(max-width:700px){.ig-box{bottom:20px;max-width:calc(100vw - 84px)}.ig-link{gap:10px;padding:10px 12px 10px 10px}.ig-ico{width:34px;height:34px}.ig-txt small{font-size:9px;letter-spacing:2px}.ig-txt b{font-size:17px}}
 @media(prefers-reduced-motion:reduce){.ig-box,.ig-box.show{transition:none}}
+@media(max-height:760px){.scroll-hint{display:none}#hero{padding:96px 0 48px}}
+@media(max-height:520px){#hero{padding:88px 0 40px}.hero-eyebrow{margin-bottom:12px}.hero-sub{margin-bottom:20px}}
+@media(max-height:520px) and (min-width:700px){.hero-eyebrow{display:none}}
 </style>
 </head>
 <body>
@@ -1174,7 +1181,7 @@ img,svg{max-width:100%;height:auto;image-rendering:-webkit-optimize-contrast}
       <span class="ticker-text">Recommandez un ami · <strong>50€ offerts</strong> sur votre prochain projet</span>
     </span>    <span class="ticker-item">
       <span class="ticker-gem"></span>
-      <span class="ticker-text">Lancement · <strong>500€</strong> tout inclus · Livraison en 10 jours</span>
+      <span class="ticker-text">Lancement · <strong>500€</strong> tout inclus · Livraison en 10 à 14 jours</span>
     </span>    <span class="ticker-item">
       <span class="ticker-gem"></span>
       <span class="ticker-text"><strong>Places limitées</strong> chaque mois · Réservez votre date</span>
@@ -1189,7 +1196,7 @@ img,svg{max-width:100%;height:auto;image-rendering:-webkit-optimize-contrast}
       <span class="ticker-text">Recommandez un ami · <strong>50€ offerts</strong> sur votre prochain projet</span>
     </span>    <span class="ticker-item">
       <span class="ticker-gem"></span>
-      <span class="ticker-text">Lancement · <strong>500€</strong> tout inclus · Livraison en 10 jours</span>
+      <span class="ticker-text">Lancement · <strong>500€</strong> tout inclus · Livraison en 10 à 14 jours</span>
     </span>    <span class="ticker-item">
       <span class="ticker-gem"></span>
       <span class="ticker-text"><strong>Places limitées</strong> chaque mois · Réservez votre date</span>
