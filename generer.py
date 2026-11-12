@@ -469,6 +469,14 @@ footer{{background:var(--white);border-top:1px solid rgba(184,146,42,.12);paddin
 
   <div class="article-form-cta">
     <div class="afc-inner">
+      <p class="afc-eyebrow">Votre faire-part sous forme de site</p>
+      <h3 class="afc-title">Un seul lien pour<br>tous vos invités</h3>
+      <p class="afc-sub">Faire-part digital animé, programme, accès, RSVP en ligne et compte à rebours : tout sur une page élégante, livrée en 10 à 14 jours pour 500&nbsp;€.</p>
+      <a class="afc-btn" href="/#offres">Découvrir l&#x27;offre →</a>
+    </div>
+  </div>
+  <div class="article-form-cta">
+    <div class="afc-inner">
       <p class="afc-eyebrow">Prêts à vous lancer ?</p>
       <h3 class="afc-title">Démarrez votre projet<br>en 2 minutes</h3>
       <p class="afc-sub">Dites-nous tout sur votre mariage — nous revenons vers vous sous 24h avec une proposition personnalisée.</p>
