@@ -8,3 +8,23 @@
 /creer-site-mariage-change-organisation    /pourquoi-creer-site-mariage-change-organisation.html    301
 /pourquoi-creer-un-site-de-mariage-change-tout-organisation.html    /pourquoi-creer-site-mariage-change-organisation.html    301
 /pourquoi-creer-un-site-de-mariage-change-tout-organisation    /pourquoi-creer-site-mariage-change-organisation.html    301
+
+# URL sans .html -> URL canonique (évite les doublons détectés par Google Search Console)
+/annoncer-son-mariage-avec-un-site-web    /annoncer-son-mariage-avec-un-site-web.html    301
+/combien-coute-site-mariage-2026    /combien-coute-site-mariage-2026.html    301
+/combien-de-temps-creer-site-de-mariage    /combien-de-temps-creer-site-de-mariage.html    301
+/erreurs-site-de-mariage    /erreurs-site-de-mariage.html    301
+/exemple-site-de-mariage-idees-inspirations    /exemple-site-de-mariage-idees-inspirations.html    301
+/faire-part-digital-comment-ca-marche    /faire-part-digital-comment-ca-marche.html    301
+/magazine    /magazine.html    301
+/mariage-en-hiver-adapter-site-web    /mariage-en-hiver-adapter-site-web.html    301
+/mariage-en-provence-site-web-indispensable    /mariage-en-provence-site-web-indispensable.html    301
+/personnaliser-site-de-mariage    /personnaliser-site-de-mariage.html    301
+/pourquoi-creer-site-mariage-change-organisation    /pourquoi-creer-site-mariage-change-organisation.html    301
+/quand-creer-site-mariage    /quand-creer-site-mariage.html    301
+/quand-envoyer-save-the-date-faire-part-mariage    /quand-envoyer-save-the-date-faire-part-mariage.html    301
+/que-mettre-sur-site-de-mariage    /que-mettre-sur-site-de-mariage.html    301
+/rsvp-mariage-en-ligne    /rsvp-mariage-en-ligne.html    301
+/site-de-mariage-gratuit-ou-sur-mesure    /site-de-mariage-gratuit-ou-sur-mesure.html    301
+/site-de-mariage-ou-faire-part-numerique    /site-de-mariage-ou-faire-part-numerique.html    301
+/site-mariage-ou-faire-part-papier    /site-mariage-ou-faire-part-papier.html    301
