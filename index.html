@@ -223,7 +223,7 @@ nav{
   display:flex;align-items:center;justify-content:space-between;
   background:transparent;transition:background .4s,padding .4s;
 }
-nav.scrolled{background:rgba(245,240,232,.95);backdrop-filter:blur(20px);padding:16px 52px;border-bottom:1px solid rgba(184,146,42,.14)}
+nav.scrolled{background:rgba(245,240,232,.98);padding:16px 52px;border-bottom:1px solid rgba(184,146,42,.14)}
 .nav-logo{font-family:'Pinyon Script',cursive;font-size:36px;color:var(--ink);text-decoration:none;line-height:1;flex-shrink:0}
 .nav-tagline{display:none}
 .nav-links{
@@ -240,7 +240,7 @@ nav.scrolled{background:rgba(245,240,232,.95);backdrop-filter:blur(20px);padding
 /* HERO */
 #hero{min-height:100vh;min-height:100svh;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden;padding:104px 0 84px;box-sizing:border-box;background:radial-gradient(ellipse 85% 65% at 50% 35%,#fdfaf5 0%,#faf6f0 60%,#f4ede3 100%)}
 .hero-bg{position:absolute;inset:0;background:radial-gradient(ellipse 70% 60% at 50% 40%,rgba(184,146,42,.07) 0%,transparent 65%),radial-gradient(ellipse 40% 40% at 80% 80%,rgba(184,146,42,.04) 0%,transparent 55%)}
-.hero-grain{position:absolute;inset:0;pointer-events:none;opacity:.022;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
+.hero-grain{position:absolute;inset:0;pointer-events:none;opacity:.05;background-image:url(grain.png);background-size:128px 128px}
 .hero-line-l{position:absolute;left:60px;top:0;bottom:0;width:1px;background:linear-gradient(to bottom,transparent,rgba(184,146,42,.15) 30%,rgba(184,146,42,.15) 70%,transparent)}
 .hero-line-r{position:absolute;right:60px;top:0;bottom:0;width:1px;background:linear-gradient(to bottom,transparent,rgba(184,146,42,.15) 30%,rgba(184,146,42,.15) 70%,transparent)}
 .hero-content{text-align:center;position:relative;z-index:2;padding:0 24px;max-width:820px}
@@ -1216,7 +1216,7 @@ html{scrollbar-width:thin;scrollbar-color:rgba(127,98,24,.5) transparent}
 #sp{position:fixed;top:0;left:0;right:0;height:2px;z-index:200;pointer-events:none;background:linear-gradient(90deg,var(--gold),var(--gold2));transform-origin:left;transform:scaleX(0)}
 @media(orientation:landscape) and (max-height:520px) and (min-width:600px){.demo{grid-template-columns:200px 1fr;gap:36px;text-align:left}.demo-txt{text-align:left}.demo-act{justify-content:flex-start}.demo-phone{max-width:200px}.demo-p{font-size:16px;margin-bottom:12px}.demo-list li{padding:6px 0 6px 20px;font-size:16px}.demo-list{margin-bottom:18px}}
 @media(prefers-reduced-motion:reduce){#sp{display:none}}
-body::after{content:"";position:fixed;inset:0;z-index:150;pointer-events:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .35 0 0 0 0 .27 0 0 0 0 .18 0 0 0 .9 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");background-size:220px 220px;opacity:.055;mix-blend-mode:multiply}
+body::after{content:"";position:fixed;inset:0;z-index:150;pointer-events:none;background-image:url(grain.png);background-size:128px 128px;opacity:.05;transform:translateZ(0)}
 @media print{body::after{display:none}}
 </style>
 </head>
@@ -2072,15 +2072,15 @@ var tl=document.getElementById('tl');if(!tl)return;
 var items=[].slice.call(tl.querySelectorAll('.tl-item'));
 var reduce=window.matchMedia&&window.matchMedia('(prefers-reduced-motion:reduce)').matches;
 if(reduce){items.forEach(function(i){i.classList.add('on')});return}
-var tick=false;
-function cy(el){var r=el.getBoundingClientRect();return r.top+r.height/2}
-function upd(){tick=false;var vh=window.innerHeight,anchor=vh*.62;
-items.forEach(function(it,i){
-var c=cy(it.querySelector('.tl-core'));
-if(c<vh*.8)it.classList.add('on');
-if(items[i+1]){var r=it.getBoundingClientRect(),t=window.innerWidth<=900?50:62,len=r.height-t-16;var f=(anchor-(r.top+t))/len;it.style.setProperty('--f',Math.max(0,Math.min(1,f)).toFixed(3))}
+var tick=false,vis=true;
+function upd(){tick=false;if(!vis)return;var vh=window.innerHeight,anchor=vh*.62,narrow=window.innerWidth<=900,t=narrow?50:62;
+var reads=items.map(function(it){var core=it.querySelector('.tl-core').getBoundingClientRect(),r=it.getBoundingClientRect();return{c:core.top+core.height/2,top:r.top,h:r.height}});
+items.forEach(function(it,i){var m=reads[i];
+if(m.c<vh*.8&&!it.classList.contains('on'))it.classList.add('on');
+if(items[i+1]){var len=m.h-t-16,f=(anchor-(m.top+t))/len;it.style.setProperty('--f',Math.max(0,Math.min(1,f)).toFixed(3))}
 })}
 function req(){if(!tick){tick=true;requestAnimationFrame(upd)}}
+if('IntersectionObserver' in window){new IntersectionObserver(function(e){vis=e[0].isIntersecting;if(vis)req()},{rootMargin:'200px 0px'}).observe(tl)}
 window.addEventListener('scroll',req,{passive:true});window.addEventListener('resize',req);upd();
 })();
 </script>
